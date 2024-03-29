@@ -151,17 +151,78 @@ function uploadPhoto(file, challengeTitle, loyaltyPoints, uid) {
         method: 'POST',
         body: formData,
     })
-    .then(response => response.json())  // Parse the JSON regardless of the status code
+    .then(response => response.json())
     .then(data => {
         if (data.hasOwnProperty('error')) {
             console.log('Error:', data);
-            alert('Please try submitting the photo again.');
+            const errorMessage = "Error processing your submission. Please try submitting the photo again.";
+            displayErrorMessage(challengeTitle, errorMessage);
         } else {
             console.log('Success:', data);
+            const pointsAwarded = data.loyaltyPoints || loyaltyPoints;
+            const successMessage = `Challenge successfully verified! You've earned ${pointsAwarded} loyalty points.`;
+            displaySuccessMessage(challengeTitle, successMessage);
         }
     })
-    
 }
+
+function clearMessages(challenge) {
+    const errorMessageElement = challenge.querySelector('.error-message');
+    if (errorMessageElement) {
+        errorMessageElement.remove();
+    }
+
+    const successMessageElement = challenge.querySelector('.success-message');
+    if (successMessageElement) {
+        successMessageElement.remove();
+    }
+}
+
+
+function displaySuccessMessage(challengeTitle, message) {
+    const challenges = document.querySelectorAll('.card');
+    challenges.forEach(challenge => {
+        const title = challenge.querySelector('.card-header').textContent;
+        if (title === challengeTitle) {
+            clearMessages(challenge); 
+            
+            let successMessageElement = challenge.querySelector('.success-message');
+            if (!successMessageElement) {
+                successMessageElement = document.createElement('p');
+                successMessageElement.className = 'success-message';
+                challenge.querySelector('.card-body').appendChild(successMessageElement);
+            }
+            successMessageElement.style.color = 'green';
+            successMessageElement.textContent = message;
+            const joinChallengeBtn = challenge.querySelector('.join-challenge-btn');
+            joinChallengeBtn.style.display = 'none';
+            challenge.style.border = '2px solid green';
+        }
+    });
+}
+
+function displayErrorMessage(challengeTitle, message) {
+    const challenges = document.querySelectorAll('.card');
+    challenges.forEach(challenge => {
+        const title = challenge.querySelector('.card-header').textContent;
+        if (title === challengeTitle) {
+            clearMessages(challenge); 
+            
+            let errorMessageElement = challenge.querySelector('.error-message');
+            if (!errorMessageElement) {
+                errorMessageElement = document.createElement('p');
+                errorMessageElement.className = 'error-message';
+                challenge.querySelector('.card-body').appendChild(errorMessageElement);
+            }
+            errorMessageElement.style.color = 'red';
+            errorMessageElement.textContent = message;
+            const joinChallengeBtn = challenge.querySelector('.join-challenge-btn');
+            joinChallengeBtn.style.display = 'inline-block'; 
+            challenge.style.border = '2px solid red';
+        }
+    });
+}
+
 
 
 
