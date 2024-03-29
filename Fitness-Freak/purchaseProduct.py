@@ -2,6 +2,7 @@ import requests
 from flask import Flask, jsonify, render_template, request
 import stripe
 from flask_cors import CORS
+import json 
 
 stripe.api_key = 'sk_test_51OuT5rDip6VoQJfrbgZM63TUyy4WeWzG2JCjJmMXwAMmJ0eSLL3LkZtlUKrUjCrjdQr6dEUD4lac2MQonS304vtL00cbcZkXtH'
 
@@ -56,15 +57,17 @@ def get_user_points(uid):
 def create_checkout_session():
     try:
         discount_amount = request.form['discountAmount']
-        user_response = requests.get(f'{USER_MICROSERVICE_URL}/users/{userId}')
-        if user_response.status_code != 200:
-            return jsonify({"error": "User not found"}), 404
+        cart = request.form['cart']
+        print(json.loads(cart))
+        # user_response = requests.get(f'{USER_MICROSERVICE_URL}/users/{userId}')
+        # if user_response.status_code != 200:
+        #     return jsonify({"error": "User not found"}), 404
         
-        user_data = user_response.json()
+        # user_data = user_response.json()
         # POST request to the payment microservice with the discount and cart items
         payment_response = requests.get(f'{PAYMENT_MICROSERVICE_URL}/get_payment_url',json={
         'discount_amount': discount_amount,
-        'user_data': user_data  # Directly as a dict, no need to convert
+        'cart': json.loads(cart)  # Directly as a dict, no need to convert
     })
         
         if payment_response.status_code == 200:

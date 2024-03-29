@@ -168,7 +168,7 @@ function fetchProducts() {
     fetch(`http://127.0.0.1:5004/product`)
         .then(response => response.json())
         .then(data => {
-            console.log(data.data.products);
+            // console.log(data.data.products);
             displayProducts(data.data.products);
         });
 }
@@ -380,6 +380,37 @@ function displayCartItems() {
     checkoutButton.className = 'btn btn-primary mt-3 align-self-end'; // Bootstrap classes for margin top and alignment
     checkoutButton.textContent = 'Checkout';
     tableAndCheckoutContainer.appendChild(checkoutButton);
+
+    checkoutButton.addEventListener('click', function() {
+        // Assume calculateTotalAfterDiscount is already properly calculating and displaying
+    
+        // Here, you would add the logic to process the checkout.
+        // This might involve updating the backend with the final amount after discount,
+        // subtracting used loyalty points from the user's total, and redirecting to a confirmation page.
+        // This step depends on your application's specific requirements and setup.
+        console.log('points used:', document.getElementById('pointsToUse').value);
+        var discountAmount = document.getElementById('pointsToUse').value;
+        const formData = new FormData();
+        formData.append('discountAmount', discountAmount);
+        formData.append('cart', JSON.stringify(cart));
+        fetch('http://localhost:5008/create_checkout_session', {
+                method: 'POST',
+                body: formData,
+
+                })
+                .then(function(response) {
+                return response.text();
+            })
+            .then(function(sessionUrl) {
+                window.location.href = sessionUrl;
+            });
+    
+        // Example: Redirect to confirmation page or show a success message
+        // window.location.href = 'confirmationPage.html';
+        // or
+        // alert('Checkout successful!');
+    });
+    
 
     // Add event listeners to input fields for quantity
     const quantityInputs = document.querySelectorAll('.product-quantity');
