@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function redirectToCheckout() {
+            fetch('/create_checkout_session')
+                .then(function(response) {
+                    return response.text();
+                })
+                .then(function(sessionUrl) {
+                    window.location.href = sessionUrl;
+                });
+        }
+    </script>
+
+</head>
+<body>
+    <h3>Test</h3>
+    <button onclick="redirectToCheckout()">
+        Checkout
+    </button>
+</body>
+</html>
