@@ -126,7 +126,7 @@ function displayChallenges(challengesData) {
                 const file = fileInput.files[0];
                 const challengeTitle = `${challenge.title}`;
                 const loyaltyPoints = `${challenge.loyaltyPoints}`;
-                uploadPhoto(file, challengeTitle, loyaltyPoints); 
+                uploadPhoto(file, challengeTitle, loyaltyPoints, uid); 
                 console.log("locked in:", file.name);
                 // change back the select pic and submit pic to none so ppl cannot see aft they submit
                 fileInput.style.display = 'none';
@@ -140,11 +140,12 @@ function displayChallenges(challengesData) {
 }
 
 
-function uploadPhoto(file, challengeTitle, loyaltyPoints) {
+function uploadPhoto(file, challengeTitle, loyaltyPoints, uid) {
     const formData = new FormData();
     formData.append('image', file);
     formData.append('challengeTitle', challengeTitle);
     formData.append('loyaltyPoints', loyaltyPoints);
+    formData.append('uid', uid);
 
     fetch('http://localhost:5012/processChallenge', {
         method: 'POST',
