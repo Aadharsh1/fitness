@@ -381,13 +381,8 @@ function displayCartItems() {
     checkoutButton.textContent = 'Checkout';
     tableAndCheckoutContainer.appendChild(checkoutButton);
 
+    // event listenre for checkot button
     checkoutButton.addEventListener('click', function() {
-        // Assume calculateTotalAfterDiscount is already properly calculating and displaying
-    
-        // Here, you would add the logic to process the checkout.
-        // This might involve updating the backend with the final amount after discount,
-        // subtracting used loyalty points from the user's total, and redirecting to a confirmation page.
-        // This step depends on your application's specific requirements and setup.
         console.log('points used:', document.getElementById('pointsToUse').value);
         var discountAmount = document.getElementById('pointsToUse').value;
         const formData = new FormData();
@@ -405,10 +400,6 @@ function displayCartItems() {
                 window.location.href = sessionUrl;
             });
     
-        // Example: Redirect to confirmation page or show a success message
-        // window.location.href = 'confirmationPage.html';
-        // or
-        // alert('Checkout successful!');
     });
     
 

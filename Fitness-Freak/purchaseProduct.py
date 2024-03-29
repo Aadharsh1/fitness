@@ -58,16 +58,10 @@ def create_checkout_session():
     try:
         discount_amount = request.form['discountAmount']
         cart = request.form['cart']
-        print(json.loads(cart))
-        # user_response = requests.get(f'{USER_MICROSERVICE_URL}/users/{userId}')
-        # if user_response.status_code != 200:
-        #     return jsonify({"error": "User not found"}), 404
         
-        # user_data = user_response.json()
-        # POST request to the payment microservice with the discount and cart items
         payment_response = requests.get(f'{PAYMENT_MICROSERVICE_URL}/get_payment_url',json={
         'discount_amount': discount_amount,
-        'cart': json.loads(cart)  # Directly as a dict, no need to convert
+        'cart': json.loads(cart)  
     })
         
         if payment_response.status_code == 200:

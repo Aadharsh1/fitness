@@ -15,25 +15,15 @@ def get_payment_url():
             data = request.get_json()
             discount_amount = data.get('discount_amount')
             cart = data.get('cart')
-            # user_data = data.get('user_data')  # Directly a dictionary
-            # cart = user_data.get('cart', [])
-            # cart = json.loads(cart)
-            # print(type(cart))
-            # print(data)
             total = (sum(item['price'] * item['quantity'] for item in cart)) * 100
-            # print(total)
             discount_percentage = (float(discount_amount) / total ) 
-            # print(discount_percentage)
-            # print(discount_percentage)
             checkout_items = []
             for item in cart:
-                # print(item)
-                discounted_price = float(item['price'] * (1-discount_percentage)) * 100   # Apply discount
-                # print(discounted_price)
+                discounted_price = float(item['price'] * (1-discount_percentage)) * 100   
                 checkout_items.append({
                     'price_data': {
                         'currency': 'sgd',
-                        'unit_amount': int(discounted_price),  # Adjusted for discount
+                        'unit_amount': int(discounted_price),  
                         'product_data': {
                             'name': f"{item['title']} (Discount Applied)",
                         },
