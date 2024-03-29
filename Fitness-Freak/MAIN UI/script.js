@@ -185,26 +185,49 @@ function displayProducts(productData) {
         const productElement = document.createElement('div');
         productElement.className = 'card my-3';
         
+        let buttonContent = ''; // Initialize button content
+    
+        if (product.availability > 0) {
+            // If product is available, set button content to "Add to Cart"
+            buttonContent = `<button class="btn btn-primary add-cart-btn-${index}">Add to Cart</button>`;
+        } else {
+            // If product is sold out, set button content to "Sold Out"
+            buttonContent = '<button class="btn btn-secondary" disabled>Sold Out</button>';
+        }
+
         let cardBodyContent = `
-            <div class="card-header">${product.title}</div>
-            <div class="card-body">
-                <h5 class="card-title">${product.description}</h5>
-                <p class="card-text">Price: ${product.price}</p>
-                <p class="card-text">Quantity: ${product.availability}</p>
-                <div class="input-group mb-3">
-                    <input type="number" class="form-control product-quantity-${index}" name="quantity" value="1" min="1" max="${product.availability}">
-                    <button class="btn btn-primary add-cart-btn-${index}">Add to Cart</button>
-                </div>
+        <div class="card-header">${product.title}</div>
+        <div class="card-body">
+            <h5 class="card-title">${product.description}</h5>
+            <p class="card-text">Price: ${product.price}</p>
+            <p class="card-text">Quantity: ${product.availability}</p>
+            <div class="input-group mb-3">
+                <input type="number" class="form-control product-quantity-${index}" name="quantity" value="0" min="0" max="${product.availability}">
+                ${buttonContent} <!-- Insert button content here -->
             </div>
-        `;
+        </div>
+    `;
 
         productElement.innerHTML = cardBodyContent;
         productContainer.appendChild(productElement);
 
-        document.querySelector(`.add-cart-btn-${index}`).addEventListener('click', () => {
-            const quantity = document.querySelector(`.product-quantity-${index}`).value;
-            addToCart({ title: product.title, description: product.description, price: product.price, quantity });
+        const quantityInput = document.querySelector(`.product-quantity-${index}`);
+        quantityInput.addEventListener('input', () => {
+            const enteredValue = parseInt(quantityInput.value);
+            const maxQuantity = parseInt(quantityInput.getAttribute('max'));
+            if (enteredValue > maxQuantity) {
+                quantityInput.value = maxQuantity;
+            }
         });
+
+        
+
+        if (product.availability > 0) {
+            document.querySelector(`.add-cart-btn-${index}`).addEventListener('click', () => {
+                const quantity = document.querySelector(`.product-quantity-${index}`).value;
+                addToCart({ title: product.title, description: product.description, price: product.price, quantity, availability: product.availability, id: product.id });
+            });
+        }
     });
 }
 
@@ -229,8 +252,18 @@ function addToCart(product){
     cart.forEach(item => {
         item.totalPrice = item.price * item.quantity;
     });
-
     updateCartCount();
+    // After you add to cart, the availability in the database changes
+    const new_availability = product.availability - product.quantity
+    const productid = product.id
+    fetch(`http://127.0.0.1:5004/product/modify/${productid}/${new_availability}`, {
+        method: 'PUT'
+    })
+        .then(response => response.json())
+        .then(data => {
+            fetchProducts()
+        });
+
 }
 
 
@@ -266,21 +299,23 @@ function displayCartItems() {
     `;
     cartTable.appendChild(headerRow);
 
-    // Populate cart items
+// Populate cart items
     cart.forEach((product, index) => {
-        const cartItemRow = document.createElement('tr');
-        cartItemRow.innerHTML = `
-            <td class="item-cell">${product.title}</td>
-            <td class="description-cell">${product.description}</td>
-            <td class="quantity-cell">${product.quantity}</td>
-            <td class="price-cell">$${product.price}</td>
-            <td class="total-cell">$${product.price * product.quantity}</td>
-            <td class="action-cell">
-                <button class="btn btn-danger remove-item-btn" data-index="${index}">Remove</button>
-            </td>
-        `;
-        cartTable.appendChild(cartItemRow);
-    });
+    const cartItemRow = document.createElement('tr');
+    cartItemRow.innerHTML = `
+        <td class="item-cell">${product.title}</td>
+        <td class="description-cell">${product.description}</td>
+        <td class="quantity-cell">
+            <input type="number" class="form-control product-quantity" value="${product.quantity}" min="1" max="${product.availability}" data-index="${index}">
+        </td>
+        <td class="price-cell">$${product.price}</td>
+        <td class="total-cell">$${product.price * product.quantity}</td>
+        <td class="action-cell">
+            <button class="btn btn-danger remove-item-btn" data-index="${index}">Remove</button>
+        </td>
+    `;
+    cartTable.appendChild(cartItemRow);
+});
 
     // Calculate total sum of items
     const totalSum = cart.reduce((sum, product) => sum + (product.price * product.quantity), 0);
@@ -356,14 +391,25 @@ function displayCartItems() {
         });
     });
 
-    // Add event listeners to remove buttons
-    const removeButtons = document.querySelectorAll('.remove-item-btn');
-    removeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const index = parseInt(this.getAttribute('data-index'));
-            removeCartItem(index);
+// Add event listeners to remove buttons
+const removeButtons = document.querySelectorAll('.remove-item-btn');
+removeButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const index = parseInt(this.getAttribute('data-index'));
+        const removedProduct = cart[index];
+        removeCartItem(index);
+        fetch(`http://127.0.0.1:5004/product/modify/${removedProduct.id}/${removedProduct.availability}`, {
+            method: 'PUT'
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle response if needed
+        })
+        .catch(error => {
+            console.error('Error updating quantity in the database:', error);
         });
     });
+});
 }
 
 
