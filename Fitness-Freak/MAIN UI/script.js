@@ -273,6 +273,7 @@ function displayProducts(productData) {
         productElement.innerHTML = cardBodyContent;
         productContainer.appendChild(productElement);
 
+        // Add event listener to input field to restrict input to maximum quantity
         const quantityInput = document.querySelector(`.product-quantity-${index}`);
         quantityInput.addEventListener('input', () => {
             const enteredValue = parseInt(quantityInput.value);
@@ -282,12 +283,16 @@ function displayProducts(productData) {
             }
         });
 
-        
-
+        // Add event listener to "Add to Cart" button
         if (product.availability > 0) {
-            document.querySelector(`.add-cart-btn-${index}`).addEventListener('click', () => {
+            const addToCartButton = document.querySelector(`.add-cart-btn-${index}`);
+            addToCartButton.addEventListener('click', () => {
                 const quantity = document.querySelector(`.product-quantity-${index}`).value;
-                addToCart({ title: product.title, description: product.description, price: product.price, quantity, availability: product.availability, id: product.id });
+                if (parseInt(quantity) > 0) {
+                    addToCart({ title: product.title, description: product.description, price: product.price, quantity, availability: product.availability, id: product.id });
+                } else {
+                    alert('Please enter a quantity greater than 0.');
+                }
             });
         }
     });
