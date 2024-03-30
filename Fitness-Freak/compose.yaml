@@ -35,17 +35,17 @@ services:
   #############################
   # User: The User microservice
   #############################
-  # user:
-  #   build:
-  #     context: ./user
-  #     dockerfile: user.Dockerfile
-  #   image: daniilzam/user:project
-  #   restart: always
-  #   environment:
-  #     GOOGLE_APPLICATION_CREDENTIALS: ./user/serviceAccountKey.json
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5003:5003"
+  user:
+    build:
+      context: ./user
+      dockerfile: user.Dockerfile
+    image: daniilzam/user:project
+    restart: always
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: ./serviceAccountKey.json
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5003:5003"
   ####################################
   # Product: The Product microservice
   ####################################
