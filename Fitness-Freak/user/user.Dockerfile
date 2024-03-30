@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir -r req.txt
 # COPY . .
 
 # Expose the port the app runs on
-# EXPOSE 5003
+EXPOSE 5003
 
 # ENV SERVICE_ACCOUNT_KEY_PATH ./user/serviceAccountKey.json
 # Run the application when the container launches
