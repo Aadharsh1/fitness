@@ -456,6 +456,7 @@ function displayCartItems() {
         const formData = new FormData(); // so this u create a 'list'
         formData.append('discountAmount', discountAmount); // so u append this amount to the list
         formData.append('cart', JSON.stringify(cart)); // then u add the cart to the list
+        formData.append('userId', window.uid); //append userID to form data
         fetch('http://localhost:5008/create_checkout_session', {
                 method: 'POST',
                 body: formData,
