@@ -51,7 +51,7 @@ def create_order():
         order_id = new_order_ref.id
 
         
-        return jsonify({"message": "Order added successfully", "order_id": order_id}), 200
+        return jsonify(order_data), 200
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
