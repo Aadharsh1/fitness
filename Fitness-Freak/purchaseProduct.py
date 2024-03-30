@@ -139,8 +139,6 @@ def create_checkout_session():
     # else:
     #     return jsonify({"error": "Expected JSON response"}), 500
 
-@app.route('/order_creation', methods=['
-
 
 @app.route('/success')
 def success():

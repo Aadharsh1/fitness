@@ -43,7 +43,6 @@ def create_order():
         # Calculate final total price after applying discount
         final_total_price = order_data['price_before_discount'] - (lpoints_used/100)
         order_data['final_total_price'] = final_total_price  # Add final total price to order data
-        print(order_data)
 
         db = firestore.client()
         orders_ref = db.collection("ordersdb")
