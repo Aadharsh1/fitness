@@ -72,52 +72,8 @@ def create_checkout_session():
             payment_url = payment_response.text
             return payment_url, 200
         else:
-            return jsonify({"error": "Failed to get payment URL"}), payment_response.status_code
-        
-        # Get user data
-        user_response = requests.get(f'{USER_MICROSERVICE_URL}/users/{user_id}')
-        if user_response.status_code != 200:
-            return jsonify({"error": "User not found"}), 404
-
-        # Get payment data (jj's part)
-        data = requests.get_json()
-        # discount_amount = data.get('discountAmount')
-        # cart_items = data.get('cart', [])
-
-        payment_request_data = {
-            'discountAmount': discount_amount,
-            'cartItems': cart_items
-        }
-
-        payment_response = requests.get(f'{PAYMENT_MICROSERVICE_URL}/get_payment_url', json=payment_request_data)
-
-        payment_url = payment_response.json()      
-
-        # Create order data to be sent to order microservice (clarise's part)
-        order_data = {
-                    "email" : email,
-                    "order_id": order_id,
-                    "item": {
-                        "product_name": product_name,
-                        "price": price,
-                        "quantity": quantity
-                    }
-                }
-
-        # Send order data to the order microservice
-        order_response = requests.post(f'{ORDER_MICROSERVICE_URL}/create_order', json=order_data)
-        if order_response.status_code != 200:
-            return jsonify({"error": "Failed to create order"}), 500
-        
-        # Order successfully created
-        order_id = order_response.json().get('order_id')
-
-        # Return the order data along with the response
-        return jsonify({
-            "message": "Order created successfully",
-            "order_data": order_data,
-        }), 200
-
+            return jsonify({"error": "Failed to get payment URL"}), payment_response.status_code\
+            
     except Exception as e:
         return str(e), 500
     # discount_amount = request.form.get('discount_amount')
@@ -163,24 +119,38 @@ def webhook():
 
     # Handle the event
     if event['type'] == 'checkout.session.completed':
-      session = event['data']['object']
-      print(json.dumps(session, indent=4))
-      payment_status = session.get('payment_status')
-      print("Payment Status:", payment_status)
-      
-      # Accessing the customer email from customer_details
-      customer_email = session.get('customer_details', {}).get('email')
-      print("Customer Email:", customer_email)
-      
-      # Accessing the total amount
-      amount_total = session.get('amount_total')
-      print("Total Amount:", amount_total / 100)
+        session = event['data']['object']
+        print(json.dumps(session, indent=4))
+        payment_status = session.get('payment_status')
+        print("Payment Status:", payment_status)
+        
+        # Accessing the customer email from customer_details
+        customer_email = session.get('customer_details', {}).get('email')
+        print("Customer Email:", customer_email)
+        
+        # Accessing the total amount
+        amount_total = session.get('amount_total')
+        print("Total Amount:", amount_total / 100)
 
-      metadata = session.get('metadata', {})
-      cart_json = metadata.get('cart', '{}')
-      cart = json.loads(cart_json)
-      discount_amount = metadata.get('discount_amount', '')
-      print(discount_amount, cart)
+        metadata = session.get('metadata', {})
+        cart_json = metadata.get('cart', '{}')
+        cart = json.loads(cart_json)
+        discount_amount = metadata.get('discount_amount', '')
+        print(cart, discount_amount)
+        payload = {
+                'cart': cart,
+                'discount_amount': discount_amount,
+                'email': customer_email
+            }
+        request_url = ORDER_MICROSERVICE_URL + '/create_order'
+        # Make the POST request with payload
+        update_response = requests.post(request_url, json=payload)
+        # Check the response
+        if update_response.status_code == 200:
+            print("Order created successfully.")   
+        else:
+            print("Failed to create order. Status code:", update_response.status_code)
+
     # ... handle other event types
     else:
       print('Unhandled event type {}'.format(event['type']))
