@@ -1,6 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 
 cred = credentials.Certificate("serviceAccountKey.json")
@@ -46,19 +46,34 @@ def get_user(user_id):
 @app.route('/user_lpoints/<user_id>', methods=['GET'])
 def get_user_lpoints(user_id):
 
-    #cannot use this method anymore since userID is inside the user table
-    # user_doc = users_ref.document(user_id).get()
-    # if user_doc.exists:
-    #     user_data = user_doc.to_dict()
-    #     return jsonify(user_data), 200
-    # else:
-    #     return jsonify({"error": "User not found"}), 404
     query = users_ref.where('userID', '==', user_id).limit(1)
     user_docs = query.stream()
     # Check if any document is found
     for user_doc in user_docs:
         user_data = user_doc.to_dict()
         return jsonify(user_data.get('lpoints')), 200
+    
+@app.route('/update_user_lpoints/<user_id>', methods=['PUT'])
+def update_user_lpoints(user_id):
+    additional_lpoints = request.json.get('lpoints')
+    query = users_ref.where('userID', '==', user_id).limit(1)
+    user_docs = query.stream()
+    user_found = False
+    for user_doc in user_docs:
+        user_found = True
+        user_data = user_doc.to_dict()
+        current_lpoints = user_data.get('lpoints', 0)
+        # print(current_lpoints, type(current_lpoints))
+        # print(additional_lpoints, type(additional_lpoints))
+        new_lpoints = current_lpoints + int(additional_lpoints)
+        user_doc_ref = users_ref.document(user_doc.id)
+        user_doc_ref.update({'lpoints': new_lpoints})
+
+    if user_found:
+        return jsonify({'newlpoints': new_lpoints}), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5003)

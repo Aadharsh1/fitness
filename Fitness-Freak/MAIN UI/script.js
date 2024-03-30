@@ -126,7 +126,7 @@ function displayChallenges(challengesData) {
                 const file = fileInput.files[0];
                 const challengeTitle = `${challenge.title}`;
                 const loyaltyPoints = `${challenge.loyaltyPoints}`;
-                uploadPhoto(file, challengeTitle, loyaltyPoints); 
+                uploadPhoto(file, challengeTitle, loyaltyPoints, uid); 
                 console.log("locked in:", file.name);
                 // change back the select pic and submit pic to none so ppl cannot see aft they submit
                 fileInput.style.display = 'none';
@@ -140,27 +140,89 @@ function displayChallenges(challengesData) {
 }
 
 
-function uploadPhoto(file, challengeTitle, loyaltyPoints) {
+function uploadPhoto(file, challengeTitle, loyaltyPoints, uid) {
     const formData = new FormData();
     formData.append('image', file);
     formData.append('challengeTitle', challengeTitle);
     formData.append('loyaltyPoints', loyaltyPoints);
+    formData.append('uid', uid);
 
     fetch('http://localhost:5012/processChallenge', {
         method: 'POST',
         body: formData,
     })
-    .then(response => response.json())  // Parse the JSON regardless of the status code
+    .then(response => response.json())
     .then(data => {
         if (data.hasOwnProperty('error')) {
             console.log('Error:', data);
-            alert('Please try submitting the photo again.');
+            const errorMessage = "Error processing your submission. Please try submitting a better photo.";
+            displayErrorMessage(challengeTitle, errorMessage);
         } else {
             console.log('Success:', data);
+            const pointsAwarded = data.loyaltyPoints || loyaltyPoints;
+            const successMessage = `Challenge successfully verified! You've earned ${pointsAwarded} loyalty points.`;
+            displaySuccessMessage(challengeTitle, successMessage);
         }
     })
-    
 }
+
+function clearMessages(challenge) {
+    const errorMessageElement = challenge.querySelector('.error-message');
+    if (errorMessageElement) {
+        errorMessageElement.remove();
+    }
+
+    const successMessageElement = challenge.querySelector('.success-message');
+    if (successMessageElement) {
+        successMessageElement.remove();
+    }
+}
+
+
+function displaySuccessMessage(challengeTitle, message) {
+    const challenges = document.querySelectorAll('.card');
+    challenges.forEach(challenge => {
+        const title = challenge.querySelector('.card-header').textContent;
+        if (title === challengeTitle) {
+            clearMessages(challenge); 
+            
+            let successMessageElement = challenge.querySelector('.success-message');
+            if (!successMessageElement) {
+                successMessageElement = document.createElement('p');
+                successMessageElement.className = 'success-message';
+                challenge.querySelector('.card-body').appendChild(successMessageElement);
+            }
+            successMessageElement.style.color = 'green';
+            successMessageElement.textContent = message;
+            const joinChallengeBtn = challenge.querySelector('.join-challenge-btn');
+            joinChallengeBtn.style.display = 'none';
+            challenge.style.border = '2px solid green';
+        }
+    });
+}
+
+function displayErrorMessage(challengeTitle, message) {
+    const challenges = document.querySelectorAll('.card');
+    challenges.forEach(challenge => {
+        const title = challenge.querySelector('.card-header').textContent;
+        if (title === challengeTitle) {
+            clearMessages(challenge); 
+            
+            let errorMessageElement = challenge.querySelector('.error-message');
+            if (!errorMessageElement) {
+                errorMessageElement = document.createElement('p');
+                errorMessageElement.className = 'error-message';
+                challenge.querySelector('.card-body').appendChild(errorMessageElement);
+            }
+            errorMessageElement.style.color = 'red';
+            errorMessageElement.textContent = message;
+            const joinChallengeBtn = challenge.querySelector('.join-challenge-btn');
+            joinChallengeBtn.style.display = 'inline-block'; 
+            challenge.style.border = '2px solid red';
+        }
+    });
+}
+
 
 
 
@@ -168,7 +230,7 @@ function fetchProducts() {
     fetch(`http://127.0.0.1:5004/product`)
         .then(response => response.json())
         .then(data => {
-            console.log(data.data.products);
+            // console.log(data.data.products);
             displayProducts(data.data.products);
         });
 }
@@ -380,6 +442,28 @@ function displayCartItems() {
     checkoutButton.className = 'btn btn-primary mt-3 align-self-end'; // Bootstrap classes for margin top and alignment
     checkoutButton.textContent = 'Checkout';
     tableAndCheckoutContainer.appendChild(checkoutButton);
+
+    // event listenre for checkot button
+    checkoutButton.addEventListener('click', function() {
+        console.log('points used:', document.getElementById('pointsToUse').value);
+        var discountAmount = document.getElementById('pointsToUse').value;
+        const formData = new FormData();
+        formData.append('discountAmount', discountAmount);
+        formData.append('cart', JSON.stringify(cart));
+        fetch('http://localhost:5008/create_checkout_session', {
+                method: 'POST',
+                body: formData,
+
+                })
+                .then(function(response) {
+                return response.text();
+            })
+            .then(function(sessionUrl) {
+                window.location.href = sessionUrl;
+            });
+    
+    });
+    
 
     // Add event listeners to input fields for quantity
     const quantityInputs = document.querySelectorAll('.product-quantity');

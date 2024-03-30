@@ -22,7 +22,7 @@ def get_pict():
     files = {'image': (file.filename, file.stream, file.content_type)}
     url = "https://objects-detection.p.rapidapi.com/objects-detection"
     headers = {
-        "X-RapidAPI-Key": "b88cc9b880mshc1d405977bb546ap1f01e3jsnd01291b61738",
+        "X-RapidAPI-Key": "cea6438fefmsh8e010e589f4fa11p1beebejsnee5e0c8bc4f3",
         "X-RapidAPI-Host": "objects-detection.p.rapidapi.com"
     }
 
