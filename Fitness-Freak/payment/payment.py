@@ -35,7 +35,8 @@ def get_payment_url():
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=checkout_items,
-
+                metadata={'cart': json.dumps(cart),
+                          'discount_amount': str(discount_amount)},
                 mode='payment',
                 success_url= 'http://127.0.0.1:5008' + '/success',
                 cancel_url= 'http://127.0.0.1:5008' + '/cancel',

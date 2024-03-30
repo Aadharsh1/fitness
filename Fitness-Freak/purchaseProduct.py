@@ -17,9 +17,6 @@ PAYMENT_MICROSERVICE_URL = 'http://127.0.0.1:5007'
 userId = 'awrWt0Rv0hRkwmXerlHKHr9BoJt1'
 ORDER_MICROSERVICE_URL = 'http://127.0.0.1:5010'
 
-tcart = None
-tpoints = None
-tuid = None
 
 #dk whether need
 # @app.route('/process_order/<user_Id>', methods=['GET'])
@@ -64,8 +61,6 @@ def create_checkout_session():
     try:
         discount_amount = request.form['discountAmount']
         cart = request.form['cart']
-        tpoints = discount_amount
-        tcart = cart
         
         payment_response = requests.get(f'{PAYMENT_MICROSERVICE_URL}/get_payment_url',json={
         'discount_amount': discount_amount,
@@ -180,7 +175,11 @@ def webhook():
       amount_total = session.get('amount_total')
       print("Total Amount:", amount_total / 100)
 
-      print(tcart, tpoints)
+      metadata = session.get('metadata', {})
+      cart_json = metadata.get('cart', '{}')
+      cart = json.loads(cart_json)
+      discount_amount = metadata.get('discount_amount', '')
+      print(discount_amount, cart)
     # ... handle other event types
     else:
       print('Unhandled event type {}'.format(event['type']))
