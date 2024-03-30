@@ -61,10 +61,12 @@ def create_checkout_session():
     try:
         discount_amount = request.form['discountAmount']
         cart = request.form['cart']
-        
+        uid = request.form['userId']
+        # print(uid)
         payment_response = requests.get(f'{PAYMENT_MICROSERVICE_URL}/get_payment_url',json={
         'discount_amount': discount_amount,
-        'cart': json.loads(cart)  
+        'cart': json.loads(cart),
+        'uid': uid
     })
         
         if payment_response.status_code == 200:
@@ -120,23 +122,29 @@ def webhook():
     # Handle the event
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        print(json.dumps(session, indent=4))
+        # print(json.dumps(session, indent=4))
         payment_status = session.get('payment_status')
-        print("Payment Status:", payment_status)
+        # print("Payment Status:", payment_status)
         
         # Accessing the customer email from customer_details
         customer_email = session.get('customer_details', {}).get('email')
-        print("Customer Email:", customer_email)
+        # print("Customer Email:", customer_email)
         
         # Accessing the total amount
         amount_total = session.get('amount_total')
-        print("Total Amount:", amount_total / 100)
+        # print("Total Amount:", amount_total / 100)
 
         metadata = session.get('metadata', {})
         cart_json = metadata.get('cart', '{}')
         cart = json.loads(cart_json)
         discount_amount = metadata.get('discount_amount', '')
-        print(cart, discount_amount)
+        uid = metadata.get('uid', '')
+        update_url = 'http://127.0.0.1:5003/update_user_lpoints/' + uid
+        payload1 =  {'lpoints': -int(discount_amount)}
+        user_points_update_response = requests.put(update_url, json=payload1)
+        if user_points_update_response.status_code == 200:
+            print('user points updated successfully')
+        # print(cart, discount_amount)
         payload = {
                 'cart': cart,
                 'discount_amount': discount_amount,
