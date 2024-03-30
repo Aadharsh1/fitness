@@ -470,17 +470,17 @@ function displayCartItems() {
             });
 
         //test
-        fetch('http://localhost:5010/create_order', {
-                method: 'POST',
-                body: formData,
+        // fetch('http://localhost:5010/create_order', {
+        //         method: 'POST',
+        //         body: formData,
 
-                })
-                .then(function(response) {
-                return response.text();
-            })
-            .then(function(sessionUrl) {
-                window.location.href = sessionUrl;
-            });
+        //         })
+        //         .then(function(response) {
+        //         return response.text();
+        //     })
+        //     .then(function(sessionUrl) {
+        //         window.location.href = sessionUrl;
+        //     });
     
     });
     

@@ -13,22 +13,28 @@ app = Flask(__name__)
 @app.route('/create_order', methods=['POST'])
 def create_order():
     try:
-        user_id = request.form['userId']
-        lpoints_used = int(request.form['discountAmount'])
-        cart_json_string = request.form['cart']
-        cart = json.loads(cart_json_string)
+        # user_id = request.form['userId']
+        data1 = request.json
+        lpoints_used = int(data1.get('discount_amount', 0))
+        cart = data1.get('cart', None)
+        email = data1.get('email', None)
+        
+        # cart_json_string = request.form['cart']
+        # cart = json.loads(cart_json_string)
         current_date = datetime.datetime.now().date()
         formatted_date = current_date.strftime("%Y-%m-%d")
-
+        # print(lpoints_used, cart, formatted_date)
+        # return lpoints_used
         order_data = {
-            "user_id": user_id,
+            # "user_id": user_id,
             "items": [],
             "date_created": formatted_date,
             "price_before_discount": 0, 
-            "lpoints_used": lpoints_used
+            "lpoints_used": lpoints_used,
+            'email': email
         }
 
-        # Add each item in the cart to the order data
+        # # Add each item in the cart to the order data
 
         for item in cart:
             order_data['price_before_discount'] += item['price'] * item['quantity']
@@ -46,10 +52,10 @@ def create_order():
 
         db = firestore.client()
         orders_ref = db.collection("ordersdb")
-        new_order_ref = orders_ref.add(order_data)
-        order_id = new_order_ref.id
+        orders_ref.add(order_data)
+        # order_id = new_order_ref.id
 
-        
+        print('order created')
         return jsonify(order_data), 200
         
     except Exception as e:
