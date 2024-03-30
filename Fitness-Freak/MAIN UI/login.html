@@ -3,20 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login - Fitness Freak</title>
     <script type="module" src="login.js"></script>
     <script type="module" src="/firebase/firebaseConfig.js"></script>
     <script type="module" src="/firebase/auth.js"></script>
+    <!-- Google Font Link -->
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .header h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+            /* font-family: 'Roboto Condensed', sans-serif; Apply the Google Font here */
+        }
+
+
+        .permanent-marker-regular {
+            font-family: "Permanent Marker", cursive;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <form>
-        Email: <input type="text" id="email" name="email"><br>
-        Password: <input type="password" id="password" name="password">
-        <input type="submit" id="submit" value="Log In">
-    </form>
-
-
-    
+    <div class="container">
+        <div class="header">
+            <h2 class="permanent-marker-regular">Fitness Freak</h2>
+        </div>
+        <form>
+            <div>
+                <label for="email">Email:</label><br>
+                <input type="text" id="email" name="email"><br>
+            </div>
+            <div>
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password">
+            </div>
+            <div>
+                <input type="submit" id="submit" value="Log In">
+            </div>
+        </form>
+    </div>
 </body>
 </html>
-

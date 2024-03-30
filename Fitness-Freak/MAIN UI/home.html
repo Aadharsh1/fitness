@@ -14,6 +14,20 @@
         td.action-cell {
             padding: 10px; /* Adjust the value as needed */
         }
+        /* Custom styling for the logout button */
+        .btn-logout {
+            background-color: #f44336; /* Red background */
+            color: white; /* White text */
+            border: 1px solid transparent; /* Optional: adds a subtle border */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+        }
+
+        .btn-logout:hover {
+            background-color: #d32f2f; /* Darker shade of red on hover */
+            color: #fff; /* Keep text white on hover */
+            text-decoration: none; /* Removes underline on hover */
+        }
+
     </style>
 </head>
 <body>
@@ -30,11 +44,12 @@
             <li class="nav-item">
                 <a class="nav-link" href="#products" data-bs-toggle="tab" onclick="fetchProducts()">Products</a>
             </li>
-            <li class="nav-item">
-                <button id="logoutBtn">Logout</button>
-            </li>
+            
             <li class="nav-item">
                 <a class="nav-link" href="#cart" data-bs-toggle="tab">Shopping Cart <span id="cartCount" class="badge bg-secondary"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link btn-logout" id="logoutBtn" role="button">Logout</a>
             </li>
         </ul>
 

@@ -12,7 +12,6 @@ submit.addEventListener('click',function(event){
         const user = userCredential.user;
         // get user id 
         console.log(user.uid)
-        alert('Logging In')
         window.location.href = 'home.html'
     })
     .catch((error) => {
