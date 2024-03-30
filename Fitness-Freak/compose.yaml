@@ -10,7 +10,7 @@ services:
   #######################################
   challenge:
     build:
-      context: ./Fitness-Freak/challenge
+      context: ./challenge
       dockerfile: challenge.Dockerfile
     image: daniilzam/challenge:project
     restart: always
@@ -22,22 +22,22 @@ services:
   ####################################
   # Fitness: The Fitness microservice
   ####################################
-  fitness:
-    build:
-      context: ./Fitness-Freak/fitnessassessment
-      dockerfile: fitness.Dockerfile
-    image: daniilzam/fitness:project
-    restart: always
-    environment:
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5001:5001"
+  # fitness:
+  #   build:
+  #     context: ./Fitness-Freak/fitnessassessment
+  #     dockerfile: fitness.Dockerfile
+  #   image: daniilzam/fitness:project
+  #   restart: always
+  #   environment:
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5001:5001"
   ####################################
   # Product: The Product microservice
   ####################################
   product:
     build:
-      context: ./Fitness-Freak/product
+      context: ./product
       dockerfile: product.Dockerfile
     image: daniilzam/product:project
     restart: always
