@@ -1,6 +1,8 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
 from flask import Flask, jsonify, request
+import json
+import datetime
 # from notification import test_order
 
 cred = credentials.Certificate("ordersdb_serviceAccountKey.json")
@@ -11,15 +13,45 @@ app = Flask(__name__)
 @app.route('/create_order', methods=['POST'])
 def create_order():
     try:
-        discount_amount = request.form['discountAmount']
-        cart = request.form['cart']
-        print(discount_amount, cart)
-        # Add order data to Firestore
-        # db = firestore.client()
-        # db.collection("ordersdb").add(order_data)
+        user_id = request.form['userId']
+        lpoints_used = int(request.form['discountAmount'])
+        cart_json_string = request.form['cart']
+        cart = json.loads(cart_json_string)
+        current_date = datetime.datetime.now().date()
+        formatted_date = current_date.strftime("%Y-%m-%d")
+
+        order_data = {
+            "user_id": user_id,
+            "items": [],
+            "date_created": formatted_date,
+            "price_before_discount": 0, 
+            "lpoints_used": lpoints_used
+        }
+
+        # Add each item in the cart to the order data
+
+        for item in cart:
+            order_data['price_before_discount'] += item['price'] * item['quantity']
+            order_data['items'].append({
+                "title": item['title'],
+                "price": item['price'],
+                "quantity": item['quantity'],
+                "availability": item['availability'],
+                "product_id": item['id']
+            })
+
+        # Calculate final total price after applying discount
+        final_total_price = order_data['price_before_discount'] - (lpoints_used/100)
+        order_data['final_total_price'] = final_total_price  # Add final total price to order data
+        print(order_data)
+
+        db = firestore.client()
+        orders_ref = db.collection("ordersdb")
+        new_order_ref = orders_ref.add(order_data)
+        order_id = new_order_ref.id
 
         
-        return jsonify({"message": "Order added successfully"}), 200
+        return jsonify(order_data), 200
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
