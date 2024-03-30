@@ -15,7 +15,7 @@ services:
     image: daniilzam/challenge:project
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/challenge
+      dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/challenge
       PYTHONUNBUFFERED: 1
     ports:
       - "5000:5000"
@@ -42,7 +42,7 @@ services:
     image: daniilzam/product:project
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/product
+      dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/product
       PYTHONUNBUFFERED: 1
     ports:
       - "5004:5004"
