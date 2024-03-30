@@ -7,6 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 stripe.api_key = 'sk_test_51OuT5rDip6VoQJfrbgZM63TUyy4WeWzG2JCjJmMXwAMmJ0eSLL3LkZtlUKrUjCrjdQr6dEUD4lac2MQonS304vtL00cbcZkXtH'
+endpoint_secret = 'whsec_6c9ba7e888b57c5367963e9546d5c1df0a9d59c8ecdacf687b010f0938d52e03'
 
 YOUR_DOMAIN = 'http://127.0.0.1:5007'
 
@@ -41,6 +42,6 @@ def get_payment_url():
             )
             return checkout_session.url, 200
 
+
 if __name__ == '__main__':
     app.run(debug=True, port = 5007)
-
