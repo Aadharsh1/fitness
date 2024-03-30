@@ -20,6 +20,19 @@ services:
     ports:
       - "5000:5000"
   ####################################
+  # Fitness: The Fitness microservice
+  ####################################
+  fitness:
+    build:
+      context: ./Fitness-Freak/fitnessassessment
+      dockerfile: fitness.Dockerfile
+    image: daniilzam/fitness:project
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5001:5001"
+  ####################################
   # Product: The Product microservice
   ####################################
   product:
