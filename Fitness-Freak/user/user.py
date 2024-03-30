@@ -2,13 +2,12 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from flask import Flask, jsonify, request
 
-
+app = Flask(__name__)
 cred = credentials.Certificate("serviceAccountKey.json")
 
 firebase_admin.initialize_app(cred)
 
 from flask_cors import CORS
-app = Flask(__name__)
 CORS(app)
 
 db = firestore.client()
@@ -76,5 +75,5 @@ def update_user_lpoints(user_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5003)
+    app.run(host='0.0.0.0', port=5003, debug=True)
 
