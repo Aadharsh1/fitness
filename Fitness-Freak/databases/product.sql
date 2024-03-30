@@ -46,9 +46,9 @@ CREATE TABLE IF NOT EXISTS `product` (
 --
 
 INSERT INTO `product` (`title`, `description`, `id`, `price`, `availability`, `image`) VALUES
-('Nike Shirt', 'Dri-fit shirt', '12345', '21.50', 2, './images/product1.png'),
-('Blenderbottle', 'Water bottle', '22345', '99.40', 25, './images/product1.png'),
-('5-kg Dumbbell', 'Dumbbell', '32345', '15.00', 10, './images/product1.png');
+('Nike Shirt', 'Dri-fit shirt', '12345', '21.50', 2, 'https://dynamic.zacdn.com/RGeQa7aWhBk51ZcgudupIci9rPs=/filters:quality(70):format(webp)/https://static-sg.zacdn.com/p/nike-2823-6338923-1.jpg'),
+('Blenderbottle', 'Water bottle', '22345', '99.40', 25, 'https://m.media-amazon.com/images/I/71XRC23uTJL._AC_SL1500_.jpg'),
+('5-kg Dumbbell', 'Dumbbell', '32345', '15.00', 10, 'https://www.ncfitnessgear.com.au/wp-content/uploads/2021/09/Hex-Dumbbell-5kg-6.jpeg');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

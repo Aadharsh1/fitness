@@ -260,6 +260,7 @@ function displayProducts(productData) {
         let cardBodyContent = `
         <div class="card-header">${product.title}</div>
         <div class="card-body">
+            <img src="${product.image}" width='200' height='200'>
             <h5 class="card-title">${product.description}</h5>
             <p class="card-text">Price: ${product.price}</p>
             <p class="card-text">Quantity: ${product.availability}</p>
