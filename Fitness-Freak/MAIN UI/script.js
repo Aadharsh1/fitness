@@ -453,10 +453,23 @@ function displayCartItems() {
     checkoutButton.addEventListener('click', function() {
         console.log('points used:', document.getElementById('pointsToUse').value);
         var discountAmount = document.getElementById('pointsToUse').value;
-        const formData = new FormData();
-        formData.append('discountAmount', discountAmount);
-        formData.append('cart', JSON.stringify(cart));
+        const formData = new FormData(); // so this u create a 'list'
+        formData.append('discountAmount', discountAmount); // so u append this amount to the list
+        formData.append('cart', JSON.stringify(cart)); // then u add the cart to the list
         fetch('http://localhost:5008/create_checkout_session', {
+                method: 'POST',
+                body: formData,
+
+                })
+                .then(function(response) {
+                return response.text();
+            })
+            .then(function(sessionUrl) {
+                window.location.href = sessionUrl;
+            });
+
+        //test
+        fetch('http://localhost:5010/create_order', {
                 method: 'POST',
                 body: formData,
 
