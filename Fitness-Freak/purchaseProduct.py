@@ -5,6 +5,8 @@ from flask_cors import CORS
 import json 
 
 stripe.api_key = 'sk_test_51OuT5rDip6VoQJfrbgZM63TUyy4WeWzG2JCjJmMXwAMmJ0eSLL3LkZtlUKrUjCrjdQr6dEUD4lac2MQonS304vtL00cbcZkXtH'
+endpoint_secret = 'whsec_6c9ba7e888b57c5367963e9546d5c1df0a9d59c8ecdacf687b010f0938d52e03'
+
 
 app = Flask(__name__)
 CORS(app)
@@ -14,6 +16,10 @@ PAYMENT_MICROSERVICE_URL = 'http://127.0.0.1:5007'
 
 userId = 'awrWt0Rv0hRkwmXerlHKHr9BoJt1'
 ORDER_MICROSERVICE_URL = 'http://127.0.0.1:5010'
+
+tcart = None
+tpoints = None
+tuid = None
 
 #dk whether need
 # @app.route('/process_order/<user_Id>', methods=['GET'])
@@ -58,6 +64,8 @@ def create_checkout_session():
     try:
         discount_amount = request.form['discountAmount']
         cart = request.form['cart']
+        tpoints = discount_amount
+        tcart = cart
         
         payment_response = requests.get(f'{PAYMENT_MICROSERVICE_URL}/get_payment_url',json={
         'discount_amount': discount_amount,
@@ -131,6 +139,9 @@ def create_checkout_session():
     # else:
     #     return jsonify({"error": "Expected JSON response"}), 500
 
+@app.route('/order_creation', methods=['
+
+
 @app.route('/success')
 def success():
     return render_template('success.html')
@@ -139,6 +150,46 @@ def success():
 @app.route('/cancel')
 def cancel():
     return render_template('cancel.html')
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    event = None
+    payload = request.data
+    sig_header = request.headers['STRIPE_SIGNATURE']
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        raise e
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        raise e
+
+    # Handle the event
+    if event['type'] == 'checkout.session.completed':
+      session = event['data']['object']
+      print(json.dumps(session, indent=4))
+      payment_status = session.get('payment_status')
+      print("Payment Status:", payment_status)
+      
+      # Accessing the customer email from customer_details
+      customer_email = session.get('customer_details', {}).get('email')
+      print("Customer Email:", customer_email)
+      
+      # Accessing the total amount
+      amount_total = session.get('amount_total')
+      print("Total Amount:", amount_total / 100)
+
+      print(tcart, tpoints)
+    # ... handle other event types
+    else:
+      print('Unhandled event type {}'.format(event['type']))
+
+    return jsonify(success=True)
+
 
 
 if __name__ == '__main__':
