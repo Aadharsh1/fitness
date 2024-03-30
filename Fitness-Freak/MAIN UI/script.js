@@ -324,13 +324,13 @@ function addToCart(product){
     // After you add to cart, the availability in the database changes
     const new_availability = product.availability - product.quantity
     const productid = product.id
-    fetch(`http://127.0.0.1:5004/product/modify/${productid}/${new_availability}`, {
-        method: 'PUT'
-    })
-        .then(response => response.json())
-        .then(data => {
-            fetchProducts()
-        });
+    // fetch(`http://127.0.0.1:5004/product/modify/${productid}/${new_availability}`, {
+    //     method: 'PUT'
+    // })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         fetchProducts()
+    //     });
 
 }
 
@@ -488,16 +488,16 @@ removeButtons.forEach(button => {
         const index = parseInt(this.getAttribute('data-index'));
         const removedProduct = cart[index];
         removeCartItem(index);
-        fetch(`http://127.0.0.1:5004/product/modify/${removedProduct.id}/${removedProduct.availability}`, {
-            method: 'PUT'
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Handle response if needed
-        })
-        .catch(error => {
-            console.error('Error updating quantity in the database:', error);
-        });
+        // fetch(`http://127.0.0.1:5004/product/modify/${removedProduct.id}/${removedProduct.availability}`, {
+        //     method: 'PUT'
+        // })
+        // .then(response => response.json())
+        // .then(data => {
+        //     // Handle response if needed
+        // })
+        // .catch(error => {
+        //     console.error('Error updating quantity in the database:', error);
+        // });
     });
 });
 }
