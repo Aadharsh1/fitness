@@ -3,9 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Successful Payment</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+        }
+        .icon {
+            color: green;
+            font-size: 100px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>SUCCESSFUL PAYMENT</h1>
+    <div class="container">
+        <div class="icon">
+            <!-- You can replace this with your preferred green arrow icon -->
+            &#x2714;
+        </div>
+        <h1>Thank you for your order!</h1>
+    </div>
+
+    <script>
+        location.port = 5110
+        setTimeout(function(){
+
+            window.location.href = 'invoice.html';
+        }, 2000); // 5 second delay
+    </script>
+
 </body>
 </html>

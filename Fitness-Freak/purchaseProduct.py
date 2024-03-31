@@ -1,5 +1,5 @@
 import requests
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect
 import stripe
 from flask_cors import CORS
 import json 
@@ -8,7 +8,7 @@ stripe.api_key = 'sk_test_51OuT5rDip6VoQJfrbgZM63TUyy4WeWzG2JCjJmMXwAMmJ0eSLL3Lk
 endpoint_secret = 'whsec_6c9ba7e888b57c5367963e9546d5c1df0a9d59c8ecdacf687b010f0938d52e03'
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 CORS(app)
 USER_MICROSERVICE_URL = 'http://127.0.0.1:5003'
 PAYMENT_MICROSERVICE_URL = 'http://127.0.0.1:5007'
@@ -102,6 +102,7 @@ def success():
 def cancel():
     return render_template('cancel.html')
 
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     event = None
@@ -156,6 +157,8 @@ def webhook():
         # Check the response
         if update_response.status_code == 200:
             print("Order created successfully.")   
+            return render_template('invoice.html', email=customer_email, cart=cart, discount_amount=discount_amount)
+
         else:
             print("Failed to create order. Status code:", update_response.status_code)
 
