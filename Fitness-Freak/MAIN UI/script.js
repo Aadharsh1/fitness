@@ -262,7 +262,7 @@ function displayProducts(productData) {
         <div class="card-body">
             <img src="${product.image}" width='200' height='200'>
             <h5 class="card-title">${product.description}</h5>
-            <p class="card-text">Price: ${product.price}</p>
+            <p class="card-text">Price: $${product.price}</p>
             <p class="card-text">Quantity: ${product.availability}</p>
             <div class="input-group mb-3">
                 <input type="number" class="form-control product-quantity-${index}" name="quantity" value="0" min="0" max="${product.availability}">
@@ -290,7 +290,7 @@ function displayProducts(productData) {
             addToCartButton.addEventListener('click', () => {
                 const quantity = document.querySelector(`.product-quantity-${index}`).value;
                 if (parseInt(quantity) > 0) {
-                    addToCart({ title: product.title, description: product.description, price: product.price, quantity, availability: product.availability, id: product.id });
+                    addToCart({ title: product.title,img: product.image, description: product.description, price: product.price, quantity, availability: product.availability, id: product.id });
                 } else {
                     alert('Please enter a quantity greater than 0.');
                 }
@@ -348,7 +348,7 @@ function displayCartItems() {
     cartContainer.innerHTML = ''; // Clear the previous content
 
     if (cart.length === 0) {
-        cartContainer.innerHTML = '<h1>Your cart is empty.</h1>';
+        cartContainer.innerHTML = '<h3>Your cart is empty, please add something to your cart.</h3>';
         return;
     }
 
@@ -358,6 +358,7 @@ function displayCartItems() {
     // Create table header row
     const headerRow = document.createElement('tr');
     headerRow.innerHTML = `
+        <th>Image</th>
         <th>Item</th>
         <th>Description</th>
         <th>Quantity</th>
@@ -371,10 +372,11 @@ function displayCartItems() {
     cart.forEach((product, index) => {
     const cartItemRow = document.createElement('tr');
     cartItemRow.innerHTML = `
+        <td style="text-align: center;"><img src="../images/nikeshirt.png" style="max-width: 200px; max-height: 200px;"></td>
         <td class="item-cell">${product.title}</td>
         <td class="description-cell">${product.description}</td>
         <td class="quantity-cell">
-            <input type="number" class="form-control product-quantity" value="${product.quantity}" min="1" max="${product.availability}" data-index="${index}">
+            ${product.quantity}
         </td>
         <td class="price-cell">$${product.price}</td>
         <td class="total-cell">$${product.price * product.quantity}</td>
@@ -416,7 +418,7 @@ function displayCartItems() {
 
         const footerRow4 = document.createElement('tr');
         footerRow4.innerHTML = `
-            <td colspan="4">Sub-Total</td>
+            <td colspan="4">Discounted Sub-Total</td>
             <td><span id='totalAmountAfterDiscount'></span></td>
             <td></td> <!-- Leave an empty column for consistency -->
             `;
