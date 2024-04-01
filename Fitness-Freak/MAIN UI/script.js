@@ -164,7 +164,7 @@ function saveProfile() {
         document.getElementById('successAlert').style.display = 'block';
         setTimeout(() => {
             document.getElementById('successAlert').style.display = 'none';
-        }, 5000); 
+        }, 1500); 
         
     })
     .catch((error) => {
