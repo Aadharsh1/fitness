@@ -163,7 +163,7 @@ def webhook():
         request_url = ORDER_MICROSERVICE_URL + '/create_order'
         # Make the POST request with payload
         update_response = requests.post(request_url, json=payload)
-        user = update_response.json()
+        user = update_response.json();
         # Check the response
         if update_response.status_code == 200:
              #notification
