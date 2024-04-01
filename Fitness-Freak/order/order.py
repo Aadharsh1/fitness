@@ -13,7 +13,7 @@ app = Flask(__name__)
 @app.route('/create_order', methods=['POST'])
 def create_order():
     try:
-        user_id = request.form['userId']
+        # user_id = request.form['userId']
         data1 = request.json
         lpoints_used = int(data1.get('discount_amount', 0))
         cart = data1.get('cart', None)
@@ -26,7 +26,7 @@ def create_order():
         # print(lpoints_used, cart, formatted_date)
         # return lpoints_used
         order_data = {
-            "user_id": user_id,
+            # "user_id": user_id,
             "items": [],
             "date_created": formatted_date,
             "price_before_discount": 0, 
