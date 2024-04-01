@@ -3,9 +3,9 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
-USER_MICROSERVICE_URL = 'http://127.0.0.1:5003'
-FITNESS_ASSESSMENT_URL = 'http://127.0.0.1:5001'
-WORKOUT_PLANNER_URL = 'http://127.0.0.1:5005'
+USER_MICROSERVICE_URL = 'http://user:5003'
+FITNESS_ASSESSMENT_URL = 'http://fitness:5001'
+WORKOUT_PLANNER_URL = 'http://workoutplanner:5005'
 
 @app.route('/get_workout_plan/<user_id>', methods=['GET'])
 def get_fitness_status(user_id):
@@ -26,7 +26,7 @@ def get_fitness_status(user_id):
     return workout_plan_response.json()
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5002)
+    app.run(host='0.0.0.0',debug=True, port=5002)
 
     
 # @app.route('/get_workout_plan', methods=['GET'])

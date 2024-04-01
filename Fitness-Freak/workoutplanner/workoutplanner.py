@@ -1,10 +1,25 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from collections import defaultdict
+from flasgger import Swagger
+from flask_cors import CORS
+
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost:3306/workout_plans' 
+CORS(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost:3306/workout_plans' 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@host.docker.internal:3306/workout_plans'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# Initialize flasgger 
+app.config['SWAGGER'] = {
+    'title': 'Workoutplanner microservice API',
+    'version': 1.0,
+    "openapi": "3.0.2",
+    'description': 'Allows create, retrieve, update, and delete of products'
+}
+swagger = Swagger(app)
 
 
 class Workout(db.Model):
@@ -61,4 +76,4 @@ def get_workout_plan():
 
 
 if __name__ == '__main__':
-    app.run(port=5005, debug=True)
+    app.run(host='0.0.0.0', port=5005, debug=True)

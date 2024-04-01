@@ -1,14 +1,13 @@
 from flask import Flask, request, jsonify
 import requests
 from flask_cors import CORS
-from invokes import invoke_http
 
 app = Flask(__name__)
 CORS(app)
 
-verification_url = "http://localhost:5006/get_pict"
-error_url = "http://localhost:5011/error"
-user_url = 'http://127.0.0.1:5003/update_user_lpoints/'
+verification_url = "http://verification:5006/get_pict"
+error_url = "http://error:5011/error"
+user_url = 'http://user:5003/update_user_lpoints/'
 
 @app.route('/processChallenge', methods=['POST'])
 def process_challenge():
@@ -45,4 +44,4 @@ def process_challenge():
         return jsonify({'error': 'Verification failed', 'details': error_response.json()}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5012)
+    app.run(host='0.0.0.0', debug=True, port=5012)

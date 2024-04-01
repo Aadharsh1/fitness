@@ -3,6 +3,10 @@ version: "3.8"
 volumes:
   rabbitmq_data:
 
+networks:
+  esdproject:
+    driver: bridge
+
 services:
  
   #######################################
@@ -12,40 +16,151 @@ services:
     build:
       context: ./challenge
       dockerfile: challenge.Dockerfile
-    image: daniilzam/challenge:project
+    image: esedteam3/challenge:project
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/challenge
       PYTHONUNBUFFERED: 1
     ports:
       - "5000:5000"
-  ####################################
+    networks:
+    - esdproject
+  ###################################
   # Fitness: The Fitness microservice
-  ####################################
-  # fitness:
-  #   build:
-  #     context: ./Fitness-Freak/fitnessassessment
-  #     dockerfile: fitness.Dockerfile
-  #   image: daniilzam/fitness:project
-  #   restart: always
-  #   environment:
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5001:5001"
-  #############################
+  ###################################
+  fitness:
+    build:
+      context: ./fitnessassessment
+      dockerfile: fitness.Dockerfile
+    image: esdteam3/fitness:project
+    restart: always
+    ports:
+      - "5001:5001"
+    networks:
+    - esdproject
+  ############################
   # User: The User microservice
-  #############################
+  ############################
   user:
     build:
       context: ./user
       dockerfile: user.Dockerfile
-    # image: daniilzam/user:project
+    image: esdteam3/user:project
     restart: always
-    # environment:
-    #   GOOGLE_APPLICATION_CREDENTIALS: ./user/serviceAccountKey.json
-    #   PYTHONUNBUFFERED: 1
     ports:
       - "5003:5003"
+    networks:
+    - esdproject
+  #######################################
+  # Verification: The Verfication microservice
+  #######################################
+  verification:
+    build:
+      context: ./verification
+      dockerfile: verification.Dockerfile
+    image: esdteam3/verification:project
+    restart: always
+    ports:
+      - "5006:5006"
+    networks:
+    - esdproject
+  #######################################
+  # Error: The Error microservice
+  #######################################
+  error:
+    build:
+      context: ./error
+      dockerfile: error.Dockerfile
+    image: esdteam3/error:project
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5011:5011"
+    networks:
+    - esdproject
+  ########################################
+  # Get Workout Plan: The Get Workout Plan complex microservice
+  ########################################
+  getworkoutplan:
+    build:
+      context: ./getworkoutplan
+      dockerfile: getworkoutplan.Dockerfile
+    image: esdteam3/getworkoutplan:project
+    restart: always
+    ports:
+      - "5002:5002"
+    depends_on:
+      - user
+      - fitness
+      - workoutplanner
+    networks:
+      - esdproject
+  ########################################
+  # Order: Order microservice
+  ########################################
+  order:
+    build:
+      context: ./order
+      dockerfile: order.Dockerfile
+    image: esdteam3/order:project
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5010:5010"
+    networks:
+    - esdproject
+  ########################################
+  # Payment: Payment microservice
+  ########################################
+  payment:
+    build:
+      context: ./payment
+      dockerfile: payment.Dockerfile
+    image: esdteam3/payment:project
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5007:5007"
+    networks:
+    - esdproject
+  ########################################
+  # Process Challenge: Process Challenge complex microservice
+  ########################################
+  processchallenge:
+    build:
+      context: ./processchallenge
+      dockerfile: processchallenge.Dockerfile
+    image: esdteam3/processchallenge:project
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5012:5012"
+    depends_on:
+      - user
+      - challenge
+      - verification
+      - error
+    networks:
+    - esdproject
+  ########################################
+  # Workout Planner: Workout Planner microservice
+  ########################################
+  workoutplanner:
+    build:
+      context: ./workoutplanner
+      dockerfile: workoutplanner.Dockerfile
+    image: esdteam3/workoutplanner:project
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/workout_plans
+    ports:
+      - "5005:5005"
+    networks:
+    - esdproject
   ####################################
   # Product: The Product microservice
   ####################################
@@ -53,24 +168,32 @@ services:
     build:
       context: ./product
       dockerfile: product.Dockerfile
-    image: daniilzam/product:project
+    image: esdteam3/product:project
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/product
       PYTHONUNBUFFERED: 1
     ports:
       - "5004:5004"
+    networks:
+    - esdproject
   ########################################
-  # Verification: The Product microservice
-  ########################################
-  # verification:
-  #   build:
-  #     context: ./verification
-  #     dockerfile: verification.Dockerfile
-  #   image: daniilzam/verification:project
-  #   restart: always
-  #   environment:
-  #     dbURL: 
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5006:5006"
+  # # Purchase Product: Purchase Product complex microservice
+  # ########################################
+  purchaseproduct:
+    build:
+      context: ./purchaseproduct
+      dockerfile: purchaseproduct.Dockerfile
+    image: esdteam3/purchaseproduct:project
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5008:5008"
+    depends_on:
+      - user
+      - product
+      - order
+      - payment
+    networks:
+    - esdproject
