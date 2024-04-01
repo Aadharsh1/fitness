@@ -73,6 +73,110 @@ function displayWorkoutPlans(data) {
     });
 }
 
+function fetchProfile() {
+    fetch(`http://127.0.0.1:5003//users/${uid}`)
+        .then(response => response.json())
+        .then(data => {
+            // console.log(data);
+            displayProfile(data);
+        });
+}
+
+window.fetchProfile = fetchProfile;
+
+function displayProfile(data) {
+    const { name, age, email, exFreq, height, lpoints, weight } = data;
+
+    const profileHTML = `
+        <div class="user-profile container mt-5">
+            <div class="alert alert-success" id="successAlert" style="display: none;">
+                Profile updated successfully!
+            </div>
+
+            <h2>Profile Details</h2>
+            <form id="profileForm">
+                <div class="form-group">
+                    <label for="name"><strong>Name:</strong></label>
+                    <input type="text" class="form-control" id="name" name="name" value="${name}" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="email"><strong>Email:</strong></label>
+                    <input type="email" class="form-control" id="email" name="email" value="${email}" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="age"><strong>Age:</strong></label>
+                    <input type="number" class="form-control" id="age" name="age" value="${age}">
+                </div>
+
+                <div class="form-group">
+                    <label for="height"><strong>Height (cm):</strong></label>
+                    <input type="number" class="form-control" id="height" name="height" value="${height}">
+                </div>
+
+                <div class="form-group">
+                    <label for="weight"><strong>Weight (kg):</strong></label>
+                    <input type="number" class="form-control" id="weight" name="weight" value="${weight}">
+                </div>
+
+                <div class="form-group">
+                    <label for="exFreq"><strong>Exercise Frequency (times/week):</strong></label>
+                    <input type="number" class="form-control" id="exFreq" name="exFreq" value="${exFreq}">
+                </div>
+
+                <button type="button" class="btn btn-primary" id="saveProfileButton">Save Changes</button>
+            </form>
+        </div>
+    `;
+
+    const profileContainer = document.getElementById('profile');
+    profileContainer.innerHTML = profileHTML;
+    document.getElementById('saveProfileButton').addEventListener('click', saveProfile);
+}
+
+function saveProfile() {
+    const age = document.getElementById('age').value;
+    const height = document.getElementById('height').value;
+    const weight = document.getElementById('weight').value;
+    const exFreq = document.getElementById('exFreq').value;
+
+    // Construct the payload with updated profile data
+    const payload = {
+        age: age,
+        height: height,
+        weight: weight,
+        exFreq: exFreq,
+    };
+
+    // console.log(payload)
+    // Send a PUT request to update the profile
+    fetch(`http://127.0.0.1:5003/update_user_profile/${window.uid}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        document.getElementById('successAlert').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('successAlert').style.display = 'none';
+        }, 5000); 
+        
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+    
+}
+
+
+
+
+
 function fetchChallenges() {
     //fetch all available challenges and pass the response to the displaychallenges function below
     fetch(`http://127.0.0.1:5000/challenge`)
