@@ -182,7 +182,7 @@ services:
   # ########################################
   purchaseproduct:
     build:
-      context: ./purchaseproduct
+      context: ./purchaseproduct/app
       dockerfile: purchaseproduct.Dockerfile
     image: esdteam3/purchaseproduct:project
     restart: always

@@ -13,4 +13,5 @@ requests==2.31.0
 SQLAlchemy==2.0.25
 pymysql==1.1.0
 firebase-admin==6.5.0
+Jinja2==3.1.2
 stripe==8.8.0

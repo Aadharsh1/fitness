@@ -8,7 +8,7 @@ stripe.api_key = 'sk_test_51OuT5rDip6VoQJfrbgZM63TUyy4WeWzG2JCjJmMXwAMmJ0eSLL3Lk
 endpoint_secret = 'whsec_6c9ba7e888b57c5367963e9546d5c1df0a9d59c8ecdacf687b010f0938d52e03'
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 CORS(app)
 USER_MICROSERVICE_URL = 'http://user:5003'
 PAYMENT_MICROSERVICE_URL = 'http://payment:5007'
