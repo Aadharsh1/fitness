@@ -72,6 +72,25 @@ def update_user_lpoints(user_id):
         return jsonify({'newlpoints': new_lpoints}), 200
     else:
         return jsonify({"error": "User not found"}), 404
+    
+
+@app.route('/update_user_profile/<user_id>', methods=['PUT'])
+def update_user_profile(user_id):
+    # Extract the updated profile data from the request
+    updated_data = request.json
+    print(user_id)
+    # Perform the database update operation here
+    # This example uses pseudo-code for the database update
+    # You'll replace this with your actual database update logic
+    try:
+        query = users_ref.where('userID', '==', user_id).limit(1)
+        user_docs = query.stream()
+        for user_doc in user_docs:
+            user_doc_ref = users_ref.document(user_doc.id)
+            user_doc_ref.update(updated_data)
+        return jsonify({"message": "User profile updated successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == '__main__':
