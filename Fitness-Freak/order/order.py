@@ -33,7 +33,6 @@ def create_order():
             "lpoints_used": lpoints_used,
             'email': email
         }
-
         # # Add each item in the cart to the order data
 
         for item in cart:

@@ -1,8 +1,8 @@
 version: "3.8"
 
-volumes:
-  # rabbitmq_data:
-  stripe-config:
+# volumes:
+#   # rabbitmq_data:
+#   stripe-config:
 
 networks:
   esdproject:
@@ -212,6 +212,6 @@ services:
     environment:
       - STRIPE_API_KEY:sk_test_51OuT5rDip6VoQJfrbgZM63TUyy4WeWzG2JCjJmMXwAMmJ0eSLL3LkZtlUKrUjCrjdQr6dEUD4lac2MQonS304vtL00cbcZkXtH
     volumes:
-    - stripe-config:/root/.config/stripe
+    - ./stripe-config:/root/.config/stripe
     networks:
     - esdproject
