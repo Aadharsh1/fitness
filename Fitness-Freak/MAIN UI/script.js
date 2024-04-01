@@ -372,7 +372,8 @@ function displayCartItems() {
     cart.forEach((product, index) => {
     const cartItemRow = document.createElement('tr');
     cartItemRow.innerHTML = `
-        <td style="text-align: center;"><img src="../images/nikeshirt.png" style="max-width: 200px; max-height: 200px;"></td>
+        <td style="text-align: center;"><img src="${product.img}" style="max-width: 100px; max-height: 100px
+        ;"></td>
         <td class="item-cell">${product.title}</td>
         <td class="description-cell">${product.description}</td>
         <td class="quantity-cell">

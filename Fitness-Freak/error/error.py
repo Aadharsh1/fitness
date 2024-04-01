@@ -7,4 +7,4 @@ def error_handler():
     return error_info, 400
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5011)
+    app.run(host='0.0.0.0',debug=True, port=5011)
