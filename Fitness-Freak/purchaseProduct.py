@@ -3,6 +3,15 @@ from flask import Flask, jsonify, render_template, request, redirect
 import stripe
 from flask_cors import CORS
 import json 
+import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+module_dir = os.path.join(current_dir, '../notification')
+sys.path.append(module_dir)
+
+from notification.notification import send_order, connection
+import pika, json
 
 stripe.api_key = 'sk_test_51OuT5rDip6VoQJfrbgZM63TUyy4WeWzG2JCjJmMXwAMmJ0eSLL3LkZtlUKrUjCrjdQr6dEUD4lac2MQonS304vtL00cbcZkXtH'
 endpoint_secret = 'whsec_6c9ba7e888b57c5367963e9546d5c1df0a9d59c8ecdacf687b010f0938d52e03'
@@ -18,35 +27,20 @@ userId = 'awrWt0Rv0hRkwmXerlHKHr9BoJt1'
 ORDER_MICROSERVICE_URL = 'http://127.0.0.1:5010'
 
 
-#dk whether need
-# @app.route('/process_order/<user_Id>', methods=['GET'])
-# def process_order(user_id):
-#     # Retrieve user data from user microservice
-#     user_response = requests.get(f'{USER_MICROSERVICE_URL}/users/{user_id}')
-#     if user_response.status_code == 200:
-#         user_data = user_response.json()
-
-#         # Process order and payment
-#         # For simplicity, we'll just return the user data here
-#         return jsonify(user_data)
-#     else:
+# @app.route('/get_payment_status', methods=['GET'])
+# def get_payment_status():
+#     user_response = requests.get(f'{USER_MICROSERVICE_URL}/users/{userId}')
+#     if user_response.status_code != 200:
 #         return jsonify({"error": "User not found"}), 404
-
-
-@app.route('/get_payment_status', methods=['GET'])
-def get_payment_status():
-    user_response = requests.get(f'{USER_MICROSERVICE_URL}/users/{userId}')
-    if user_response.status_code != 200:
-        return jsonify({"error": "User not found"}), 404
     
-    user_data = user_response.json()
-    cart = user_data.get('cart', [])
-    maxLPoints = user_data.get('lpoints')
-    total_amount_before_discount = sum(item['price'] * item['quantity'] for item in cart)
-    maximum_total = total_amount_before_discount * 15
-    if maxLPoints <  maximum_total:
-        maximum_total = maxLPoints
-    return render_template('user_data.html', cart=cart, maxLPoints=maxLPoints, total_amount_before_discount=total_amount_before_discount, maximum_total = maximum_total)
+#     user_data = user_response.json()
+#     cart = user_data.get('cart', [])
+#     maxLPoints = user_data.get('lpoints')
+#     total_amount_before_discount = sum(item['price'] * item['quantity'] for item in cart)
+#     maximum_total = total_amount_before_discount * 15
+#     if maxLPoints <  maximum_total:
+#         maximum_total = maxLPoints
+#     return render_template('user_data.html', cart=cart, maxLPoints=maxLPoints, total_amount_before_discount=total_amount_before_discount, maximum_total = maximum_total)
 
 
 @app.route('/get_user_points/<uid>', methods=['GET'])
@@ -154,9 +148,24 @@ def webhook():
         request_url = ORDER_MICROSERVICE_URL + '/create_order'
         # Make the POST request with payload
         update_response = requests.post(request_url, json=payload)
+        print(update_response.json())
+        user = update_response.json()
         # Check the response
         if update_response.status_code == 200:
+            #notification
+            print("notification start")
+            send_order(user["email"], user["name"], user)
+            channel = connection.channel()
+            message = {
+                'user_id': uid
+            }
+            channel.basic_publish(exchange='', routing_key='notifications', body=json.dumps(message))
+            print("Message sent to notifications queue")
+            connection.close()
+            print("notification end")
+
             print("Order created successfully.")   
+            ##
             return render_template('invoice.html', email=customer_email, cart=cart, discount_amount=discount_amount)
 
         else:
