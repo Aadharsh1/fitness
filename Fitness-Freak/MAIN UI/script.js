@@ -562,7 +562,19 @@ function displayCartItems() {
         var discountAmount = document.getElementById('pointsToUse').value;
         const formData = new FormData(); // so this u create a 'list'
         formData.append('discountAmount', discountAmount); // so u append this amount to the list
-        formData.append('cart', JSON.stringify(cart)); // then u add the cart to the list
+        var formDataArray = cart.map(function(item) {
+            return {
+                title: item.title,
+                price: item.price,
+                quantity: item.quantity,
+                availability: item.availability,
+                id: item.id,
+                totalPrice: item.totalPrice
+            };
+        });
+        
+        // Append the cart data to formData as JSON string
+        formData.append('cart', JSON.stringify(formDataArray));
         formData.append('userId', window.uid); //append userID to form data
         fetch('http://localhost:5008/create_checkout_session', {
                 method: 'POST',
