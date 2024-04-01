@@ -1,8 +1,17 @@
 import requests
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect
 import stripe
 from flask_cors import CORS
 import json 
+import sys
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+module_dir = os.path.join(current_dir, '../../notification')
+sys.path.append(module_dir)
+
+from notification import send_order, connection
+import pika, json
 
 stripe.api_key = 'sk_test_51OuT5rDip6VoQJfrbgZM63TUyy4WeWzG2JCjJmMXwAMmJ0eSLL3LkZtlUKrUjCrjdQr6dEUD4lac2MQonS304vtL00cbcZkXtH'
 endpoint_secret = 'whsec_6c9ba7e888b57c5367963e9546d5c1df0a9d59c8ecdacf687b010f0938d52e03'
@@ -10,9 +19,12 @@ endpoint_secret = 'whsec_6c9ba7e888b57c5367963e9546d5c1df0a9d59c8ecdacf687b010f0
 
 app = Flask(__name__, template_folder='templates')
 CORS(app)
-USER_MICROSERVICE_URL = 'http://user:5003'
-PAYMENT_MICROSERVICE_URL = 'http://payment:5007'
-ORDER_MICROSERVICE_URL = 'http://order:5010'
+USER_MICROSERVICE_URL = 'http://127.0.0.1:5003'
+PAYMENT_MICROSERVICE_URL = 'http://127.0.0.1:5007'
+
+
+userId = 'awrWt0Rv0hRkwmXerlHKHr9BoJt1'
+ORDER_MICROSERVICE_URL = 'http://127.0.0.1:5010'
 
 
 #dk whether need
@@ -29,6 +41,23 @@ ORDER_MICROSERVICE_URL = 'http://order:5010'
 #     else:
 #         return jsonify({"error": "User not found"}), 404
 
+
+@app.route('/get_payment_status', methods=['GET'])
+def get_payment_status():
+    user_response = requests.get(f'{USER_MICROSERVICE_URL}/users/{userId}')
+    if user_response.status_code != 200:
+        return jsonify({"error": "User not found"}), 404
+    
+    user_data = user_response.json()
+    cart = user_data.get('cart', [])
+    maxLPoints = user_data.get('lpoints')
+    total_amount_before_discount = sum(item['price'] * item['quantity'] for item in cart)
+    maximum_total = total_amount_before_discount * 15
+    if maxLPoints <  maximum_total:
+        maximum_total = maxLPoints
+    return render_template('user_data.html', cart=cart, maxLPoints=maxLPoints, total_amount_before_discount=total_amount_before_discount, maximum_total = maximum_total)
+
+
 @app.route('/get_user_points/<uid>', methods=['GET'])
 def get_user_points(uid):
     user_response = requests.get(f'{USER_MICROSERVICE_URL}/user_lpoints/{uid}')
@@ -42,11 +71,11 @@ def create_checkout_session():
         discount_amount = request.form['discountAmount']
         cart = request.form['cart']
         uid = request.form['userId']
-        
+        # print(uid)
         payment_response = requests.get(f'{PAYMENT_MICROSERVICE_URL}/get_payment_url',json={
         'discount_amount': discount_amount,
         'cart': json.loads(cart),
-        'uid' : uid
+        'uid': uid
     })
         
         if payment_response.status_code == 200:
@@ -81,6 +110,7 @@ def success():
 @app.route('/cancel')
 def cancel():
     return render_template('cancel.html')
+
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -119,7 +149,7 @@ def webhook():
         cart = json.loads(cart_json)
         discount_amount = metadata.get('discount_amount', '')
         uid = metadata.get('uid', '')
-        update_url = USER_MICROSERVICE_URL+ '/update_user_lpoints/' + uid
+        update_url = 'http://127.0.0.1:5003/update_user_lpoints/' + uid
         payload1 =  {'lpoints': -int(discount_amount)}
         user_points_update_response = requests.put(update_url, json=payload1)
         if user_points_update_response.status_code == 200:
@@ -133,9 +163,24 @@ def webhook():
         request_url = ORDER_MICROSERVICE_URL + '/create_order'
         # Make the POST request with payload
         update_response = requests.post(request_url, json=payload)
+        user = update_response.json();
         # Check the response
         if update_response.status_code == 200:
+             #notification
+            print("notification start")
+            send_order(user["email"], user["user_id"], user)
+            channel = connection.channel()
+            message = {
+                'user_id': uid
+            }
+            channel.basic_publish(exchange='', routing_key='notifications', body=json.dumps(message))
+            print("Message sent to notifications queue")
+            connection.close()
+            print("notification end")
+
             print("Order created successfully.")   
+            return render_template('invoice.html', email=customer_email, cart=cart, discount_amount=discount_amount)
+
         else:
             print("Failed to create order. Status code:", update_response.status_code)
 
@@ -148,5 +193,4 @@ def webhook():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=5008)
-
+    app.run(debug=True, port=5008)
