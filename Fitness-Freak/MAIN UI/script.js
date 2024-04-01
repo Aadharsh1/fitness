@@ -136,10 +136,10 @@ function displayProfile(data) {
 }
 
 function saveProfile() {
-    const age = document.getElementById('age').value;
-    const height = document.getElementById('height').value;
-    const weight = document.getElementById('weight').value;
-    const exFreq = document.getElementById('exFreq').value;
+    const age = parseInt(document.getElementById('age').value);
+    const height = parseFloat(document.getElementById('height').value);
+    const weight = parseFloat(document.getElementById('weight').value);
+    const exFreq = parseInt(document.getElementById('exFreq').value);
 
     // Construct the payload with updated profile data
     const payload = {
