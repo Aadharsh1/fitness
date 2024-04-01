@@ -41,10 +41,12 @@ def create_checkout_session():
     try:
         discount_amount = request.form['discountAmount']
         cart = request.form['cart']
+        uid = request.form['userId']
         
         payment_response = requests.get(f'{PAYMENT_MICROSERVICE_URL}/get_payment_url',json={
         'discount_amount': discount_amount,
-        'cart': json.loads(cart)  
+        'cart': json.loads(cart),
+        'uid' : uid
     })
         
         if payment_response.status_code == 200:

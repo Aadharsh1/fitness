@@ -197,3 +197,18 @@ services:
       - payment
     networks:
     - esdproject
+  ########################################
+  # # Stripe CLI
+  # ########################################
+  stripe:
+    image: stripe/stripe-cli:v1.19.4
+    command: listen --forward-to http://host.docker.internal:5008/webhook
+    depends_on:
+      - payment
+      - user
+      - product 
+      - order 
+    environment:
+      - STRIPE_API_KEY:sk_test_51OuT5rDip6VoQJfrbgZM63TUyy4WeWzG2JCjJmMXwAMmJ0eSLL3LkZtlUKrUjCrjdQr6dEUD4lac2MQonS304vtL00cbcZkXtH
+    networks:
+    - esdproject
