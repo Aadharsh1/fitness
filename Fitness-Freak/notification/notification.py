@@ -9,7 +9,7 @@ api_key = '5cc6a1bb560de17e3436c05775842281'
 api_secret = '0009db80a2e7b995ca791048f36b3b63'
 
 def create_connection():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='host.docker.internal'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq',heartbeat=3600, blocked_connection_timeout=3600))
     return connection
 
 # Callback function for consuming messages from RabbitMQ

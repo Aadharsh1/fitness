@@ -1,7 +1,7 @@
 version: "3.8"
 
-# volumes:
-#   # rabbitmq_data:
+volumes:
+  rabbitmq_data:
 #   stripe-config:
 
 networks:
@@ -141,10 +141,16 @@ services:
     ports:
       - "5012:5012"
     depends_on:
-      - user
-      - challenge
-      - verification
-      - error
+      user:
+        condition: service_started
+      challenge:
+        condition: service_started
+      verification:
+        condition: service_started
+      error:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     networks:
     - esdproject
   ########################################
@@ -187,15 +193,22 @@ services:
       dockerfile: purchaseproduct.Dockerfile
     image: esdteam3/purchaseproduct:project
     restart: always
+    
     environment:
       PYTHONUNBUFFERED: 1
     ports:
       - "5008:5008"
     depends_on:
-      - user
-      - product
-      - order
-      - payment
+      user:
+        condition: service_started
+      product:
+        condition: service_started
+      order:
+        condition: service_started
+      payment:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     networks:
     - esdproject
   ########################################
@@ -224,7 +237,28 @@ services:
       dockerfile: notification.Dockerfile
     image: esdteam3/notification:project
     restart: always
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     environment:
       PYTHONUNBUFFERED: 1
     networks:
     - esdproject
+  ########################################
+  # # RabbitMQ
+  # ########################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"   
+      - "15672:15672"  
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq  
+    networks:
+      - esdproject

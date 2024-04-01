@@ -170,7 +170,7 @@ def webhook():
 
 # Function to create a connection to RabbitMQ
 def create_connection():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='host.docker.internal'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq',heartbeat=3600, blocked_connection_timeout=3600))
     return connection
 
 # Function to publish a message to RabbitMQ
