@@ -2,7 +2,7 @@ import requests
 from flask import Flask, jsonify, render_template, request
 import stripe
 from flask_cors import CORS
-import json 
+import json, pika
 
 stripe.api_key = 'sk_test_51OuT5rDip6VoQJfrbgZM63TUyy4WeWzG2JCjJmMXwAMmJ0eSLL3LkZtlUKrUjCrjdQr6dEUD4lac2MQonS304vtL00cbcZkXtH'
 endpoint_secret = 'whsec_6c9ba7e888b57c5367963e9546d5c1df0a9d59c8ecdacf687b010f0938d52e03'
@@ -133,7 +133,29 @@ def webhook():
         # Make the POST request with payload
         update_response = requests.post(request_url, json=payload)
         # Check the response
+        user = update_response.json()
         if update_response.status_code == 200:
+            # Create a connection to RabbitMQ
+            connection = create_connection()
+            channel = connection.channel()
+
+            # Define the exchange and routing key
+            exchange_name = 'notification'
+            routing_key = 'send_order'
+
+            # Define the message to be published
+            data = create_email_order(user["email"], user)
+
+            # Publish the message
+            try:
+                channel.basic_publish(exchange='notification', routing_key='send_order', body=json.dumps(data))
+                print("Message sent to send_order queue")
+            except Exception as e:
+                print({"code": 404, "message": "Error, fail to send email."})
+                publish_message(channel, exchange_name, routing_key, data)
+                # Close the connection
+                connection.close()
+
             print("Order created successfully.")   
         else:
             print("Failed to create order. Status code:", update_response.status_code)
@@ -144,6 +166,57 @@ def webhook():
 
     return jsonify(success=True)
 
+
+
+# Function to create a connection to RabbitMQ
+def create_connection():
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='host.docker.internal'))
+    return connection
+
+# Function to publish a message to RabbitMQ
+def publish_message(channel, exchange_name, routing_key, message):
+    channel.basic_publish(exchange=exchange_name, routing_key=routing_key, body=message)
+    print(" [x] Sent message:", message)
+
+
+#Function to send email notification for successful order creation
+def create_email_order(user_email, user_cart):
+    no = 1
+    cart_html = "<table border='1'><tr><td>No.</td><td>Product</td><td>Quantity</td><td>Price</td></tr>"
+    for i in range(len(user_cart["items"])):
+        item = user_cart["items"][i]
+        cart_html += "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>".format(str(no), str(item["title"]), str(item["quantity"]), str(item["price"]))
+        no += 1
+    cart_html += "<tr><td colspan='3'>Loyalty Points used:</td><td>{}</td></tr>".format(str(user_cart["lpoints_used"]))
+    cart_html += "<tr><td colspan='3'>Total price before discount:</td><td>{}</td></tr>".format(str(user_cart["price_before_discount"]))
+    cart_html += "<tr><td colspan='3'>Total price after discount:</td><td>{}</td></tr>".format(str(user_cart["final_total_price"]))
+    cart_html += "</table>"
+    data = {
+    'Messages': [
+        {
+        "From": {
+            "Email": "fitnessfreakscompany888@gmail.com",
+            "Name": "Fitness"
+        },
+        "To": [
+            {
+            "Email": user_email,
+            "Cart": user_cart["items"]
+            
+            }
+        ],
+        "Subject": "Fitness Freak Successful Order Creation",
+        "HTMLPart": "Dear Customer,<br /><br/>"
+        "Thank you for shopping with us! Your order has been received and is being processed. Your order details are below for your reference. <br/><br/>"
+        "You bought: <br/>" + cart_html + "<br/>"
+        "Hope you have a great day, thank you! <br/><br/>"
+        "Cheers, <br/>"
+        "Fitness Freaks", 
+        }
+        ]
+    }
+    return data
+#notification end
 
 
 if (__name__ == '__main__'):

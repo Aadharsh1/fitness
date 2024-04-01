@@ -215,3 +215,16 @@ services:
     - ./stripe-config:/root/.config/stripe
     networks:
     - esdproject
+  ########################################
+  # Notification: Notification microservice
+  ########################################
+  notification:
+    build:
+      context: ./notification
+      dockerfile: notification.Dockerfile
+    image: esdteam3/notification:project
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    networks:
+    - esdproject
