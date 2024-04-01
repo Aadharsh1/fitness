@@ -16,6 +16,7 @@ def get_payment_url():
             data = request.get_json()
             discount_amount = data.get('discount_amount')
             cart = data.get('cart')
+            uid = data.get('uid')
             total = (sum(item['price'] * item['quantity'] for item in cart)) * 100
             discount_percentage = (float(discount_amount) / total ) 
             checkout_items = []
@@ -27,6 +28,7 @@ def get_payment_url():
                         'unit_amount': int(discounted_price),  
                         'product_data': {
                             'name': f"{item['title']} (Discount Applied)",
+                            # 'images': [item['image']],  # Corrected attribute name
                         },
                     },
                     'quantity': item['quantity'],
@@ -36,7 +38,9 @@ def get_payment_url():
                 payment_method_types=['card'],
                 line_items=checkout_items,
                 metadata={'cart': json.dumps(cart),
-                          'discount_amount': str(discount_amount)},
+                          'discount_amount': str(discount_amount)
+                          ,
+                          'uid': str(uid)},
                 mode='payment',
                 success_url= 'http://127.0.0.1:5008' + '/success',
                 cancel_url= 'http://127.0.0.1:5008' + '/cancel',
