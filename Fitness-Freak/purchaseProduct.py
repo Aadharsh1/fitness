@@ -157,8 +157,6 @@ def webhook():
         # Check the response
         if update_response.status_code == 200:
             print("Order created successfully.")   
-            return render_template('invoice.html', email=customer_email, cart=cart, discount_amount=discount_amount)
-
         else:
             print("Failed to create order. Status code:", update_response.status_code)
 
