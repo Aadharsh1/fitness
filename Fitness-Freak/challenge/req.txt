@@ -13,3 +13,4 @@ requests==2.31.0
 SQLAlchemy==2.0.25
 pymysql==1.1.0
 firebase-admin==6.5.0
+mysql-connector-python==8.3.0

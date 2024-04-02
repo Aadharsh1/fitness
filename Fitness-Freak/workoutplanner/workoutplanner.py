@@ -3,12 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from collections import defaultdict
 from flasgger import Swagger
 from flask_cors import CORS
+from os import environ
 
 
 app = Flask(__name__)
 CORS(app)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost:3306/workout_plans' 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@host.docker.internal:3306/workout_plans'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 

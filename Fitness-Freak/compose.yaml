@@ -20,12 +20,33 @@ services:
     image: esedteam3/challenge:project
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/challenge
+      dbURL: mysql+mysqlconnector://root:root@challengeDB:3306/challenge
       PYTHONUNBUFFERED: 1
     ports:
       - "5000:5000"
     networks:
     - esdproject
+    depends_on:
+      challengeDB:
+        condition: service_healthy
+  #######################################
+  # ChallengeDB: The Challenge database
+  #######################################
+  challengeDB:
+    build:
+      context: ./challengeDB
+      dockerfile: challengeDB.Dockerfile
+    image: esedteam3/challengedb:project
+    restart: always
+    networks:
+    - esdproject
+    healthcheck:
+      test: ['CMD',"mysqladmin","ping","-h","localhost"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+
   ###################################
   # Fitness: The Fitness microservice
   ###################################
@@ -163,11 +184,31 @@ services:
     image: esdteam3/workoutplanner:project
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/workout_plans
+      dbURL: mysql+mysqlconnector://root:root@workoutplannerDB:3306/workout_plans
     ports:
       - "5005:5005"
     networks:
     - esdproject
+    depends_on:
+      workoutplannerDB:
+        condition: service_healthy
+  #######################################
+  # WorkoutplannerDB: The Workoutplanner database
+  #######################################
+  workoutplannerDB:
+    build:
+      context: ./workoutplannerDB
+      dockerfile: workoutplannerDB.Dockerfile
+    image: esedteam3/workoutplannerdb:project
+    restart: always
+    networks:
+    - esdproject
+    healthcheck:
+      test: ['CMD',"mysqladmin","ping","-h","localhost"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
   ####################################
   # Product: The Product microservice
   ####################################
@@ -178,12 +219,32 @@ services:
     image: esdteam3/product:project
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://root@host.docker.internal:3306/product
+      dbURL: mysql+mysqlconnector://root:root@productDB:3306/product
       PYTHONUNBUFFERED: 1
     ports:
       - "5004:5004"
     networks:
     - esdproject
+    depends_on:
+      productDB:
+        condition: service_healthy
+  #######################################
+  # ProductDB: The Product database
+  #######################################
+  productDB:
+    build:
+      context: ./productDB
+      dockerfile: productDB.Dockerfile
+    image: esedteam3/productdb:project
+    restart: always
+    networks:
+    - esdproject
+    healthcheck:
+      test: ['CMD',"mysqladmin","ping","-h","localhost"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
   ########################################
   # # Purchase Product: Purchase Product complex microservice
   # ########################################
