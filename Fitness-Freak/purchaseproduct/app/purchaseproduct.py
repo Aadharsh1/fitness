@@ -58,19 +58,7 @@ def create_checkout_session():
             
     except Exception as e:
         return str(e), 500
-    # discount_amount = request.form.get('discount_amount')
-    # # Assuming the payment service expects JSON data
-    # payment_response = requests.post(f'{PAYMENT_MICROSERVICE_URL}/get_payment_url', json={'discount_amount': discount_amount})
-
-    # # Check if the response is JSON
-    # if 'application/json' in payment_response.headers.get('Content-Type'):
-    #     try:
-    #         payment_url = payment_response.json()
-    #         return jsonify(payment_url), 200
-    #     except ValueError:  # includes simplejson.decoder.JSONDecodeError
-    #         return jsonify({"error": "Failed to decode JSON"}), 500
-    # else:
-    #     return jsonify({"error": "Expected JSON response"}), 500
+    
 
 
 @app.route('/success')
@@ -102,17 +90,13 @@ def webhook():
     # Handle the event
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        # print(json.dumps(session, indent=4))
         payment_status = session.get('payment_status')
-        # print("Payment Status:", payment_status)
         
         # Accessing the customer email from customer_details
         customer_email = session.get('customer_details', {}).get('email')
-        # print("Customer Email:", customer_email)
         
         # Accessing the total amount
         amount_total = session.get('amount_total')
-        # print("Total Amount:", amount_total / 100)
         metadata = session.get('metadata', {})
         cart_json = metadata.get('cart', '{}')
         cart = json.loads(cart_json) # changes the cart to object
@@ -128,7 +112,6 @@ def webhook():
         user_points_update_response = requests.put(update_url, json=payload1)
         if user_points_update_response.status_code == 200:
             print('user points updated successfully')
-        # print(cart, discount_amount)
         payload = {
                 'cart': cart,
                 'discount_amount': discount_amount,

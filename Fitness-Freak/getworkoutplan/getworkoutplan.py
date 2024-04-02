@@ -29,24 +29,3 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5002)
 
     
-# @app.route('/get_workout_plan', methods=['GET'])
-# def get_workout_plan():
-#     user_id = request.args.get('user_id')
-#     user_response = requests.get(f'{USER_MICROSERVICE_URL}/users/{user_id}')
-#     if user_response.status_code != 200:
-#         return jsonify({"error": "User not found"}), 404
-    
-#     user_data = user_response.json()
-#     print("User data from User Microservice:", user_data)
-#     fitness_status_response = requests.get(f'{FITNESS_ASSESSMENT_URL}/calculate_bmi', params=user_data)
-#     if fitness_status_response.status_code != 200:
-#         return jsonify({"error": "Could not calculate BMI"}), fitness_status_response.status_code
-    
-#     fitness_status_data = fitness_status_response.json()
-
-#     workout_plan_response = requests.get(f'{WORKOUT_PLANNER_URL}/workoutplanner/{user_id}', params=fitness_status_data)
-#     if workout_plan_response.status_code != 200:
-#         return jsonify({"error": "Workout plan not found"}), 404
-    
-#     workout_plan_data = workout_plan_response.json()
-#     return jsonify(workout_plan_data

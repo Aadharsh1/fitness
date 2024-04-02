@@ -33,8 +33,6 @@ auth.onAuthStateChanged((user) => {
 
 
 function fetchWorkoutPlans() {
-    // var userId = 'Dxmg1VHpYHeWnGkIShfV';
-    // hardcoded the userId cause idk how we gonna manage like user session and get the userid of the currently logged in user
     // this function will call the complex microsrvice, getworkouplan with the user id and pass in the returned workout plan into the displayWorkoutPlan function below
     fetch(`http://127.0.0.1:5002/get_workout_plan/${uid}`)
         .then(response => response.json())
@@ -47,7 +45,6 @@ window.fetchWorkoutPlans = fetchWorkoutPlans;
 
 function displayWorkoutPlans(data) {
     // this one is to display the data of the response from the function on top to the ui
-    // CLARISE if u change the structure of how the workout plan is returned, u need to change this
     const plansContainer = document.getElementById('plans-container');
     plansContainer.innerHTML = ''; 
     Object.keys(data).forEach(day => {
@@ -77,7 +74,6 @@ function fetchProfile() {
     fetch(`http://127.0.0.1:5003//users/${uid}`)
         .then(response => response.json())
         .then(data => {
-            // console.log(data);
             displayProfile(data);
         });
 }
@@ -154,7 +150,6 @@ function saveProfile() {
         exFreq: exFreq,
     };
 
-    // console.log(payload)
     // Send a PUT request to update the profile
     fetch(`http://127.0.0.1:5003/update_user_profile/${window.uid}`, {
         method: 'PUT',
@@ -339,7 +334,6 @@ function fetchProducts() {
     fetch(`http://127.0.0.1:5004/product`)
         .then(response => response.json())
         .then(data => {
-            // console.log(data.data.products);
             displayProducts(data.data.products);
         });
 }
@@ -441,13 +435,7 @@ function addToCart(product){
     // After you add to cart, the availability in the database changes
     const new_availability = product.availability - product.quantity
     const productid = product.id
-    // fetch(`http://127.0.0.1:5004/product/modify/${productid}/${new_availability}`, {
-    //     method: 'PUT'
-    // })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         fetchProducts()
-    //     });
+ 
 
 }
 
@@ -518,7 +506,7 @@ function displayCartItems() {
         // Now create footerRow2 here, inside the .then function
         const footerRow2 = document.createElement('tr');
         footerRow2.innerHTML = `
-            <td colspan="4">Available Loyalty Points</td>
+            <td colspan="5">Available Loyalty Points</td>
             <td>${lpoints}</td>
             <td></td> <!-- Leave an empty column for consistency -->
         `;
@@ -527,7 +515,7 @@ function displayCartItems() {
         // Now create footerRow2 here, inside the .then function
         const footerRow3 = document.createElement('tr');
         footerRow3.innerHTML = `
-            <td colspan="4">Enter amount of points to redeem</td>
+            <td colspan="5">Enter amount of points to redeem</td>
             <td><label for="pointsToUse" class="form-label">Loyalty Points to Use:</label>
             <input type="number" class="form-control" id="pointsToUse" min="0" max="${maximum_total}" value="0" oninput="calculateTotalAfterDiscount(${totalSum}, ${lpoints})"></td>
             <td></td> <!-- Leave an empty column for consistency -->
@@ -536,7 +524,7 @@ function displayCartItems() {
 
         const footerRow4 = document.createElement('tr');
         footerRow4.innerHTML = `
-            <td colspan="4">Discounted Sub-Total</td>
+            <td colspan="5">Discounted Sub-Total</td>
             <td><span id='totalAmountAfterDiscount'></span></td>
             <td></td> <!-- Leave an empty column for consistency -->
             `;
@@ -548,7 +536,7 @@ function displayCartItems() {
     // Create footer row for total sum
     const footerRow = document.createElement('tr');
     footerRow.innerHTML = `
-        <td colspan="4">Sub-Total</td>
+        <td colspan="5">Sub-Total</td>
         <td>$${totalSum.toFixed(2)}</td>
         <td></td> <!-- Leave an empty column for consistency -->
     `;
@@ -601,18 +589,7 @@ function displayCartItems() {
                 window.location.href = sessionUrl;
             });
 
-        //test
-        // fetch('http://localhost:5010/create_order', {
-        //         method: 'POST',
-        //         body: formData,
-
-        //         })
-        //         .then(function(response) {
-        //         return response.text();
-        //     })
-        //     .then(function(sessionUrl) {
-        //         window.location.href = sessionUrl;
-        //     });
+        
     
     });
     
@@ -634,16 +611,7 @@ removeButtons.forEach(button => {
         const index = parseInt(this.getAttribute('data-index'));
         const removedProduct = cart[index];
         removeCartItem(index);
-        // fetch(`http://127.0.0.1:5004/product/modify/${removedProduct.id}/${removedProduct.availability}`, {
-        //     method: 'PUT'
-        // })
-        // .then(response => response.json())
-        // .then(data => {
-        //     // Handle response if needed
-        // })
-        // .catch(error => {
-        //     console.error('Error updating quantity in the database:', error);
-        // });
+        
     });
 });
 }
@@ -670,7 +638,7 @@ function calculateTotalAfterDiscount(total, points) {
     const totalAmountBeforeDiscount = total;
     const discount = pointsToUseInput.value * 0.01; // 1 point = 1 cent
     const totalAmountAfterDiscount = Math.max(totalAmountBeforeDiscount - discount, 0);
-    document.getElementById('totalAmountAfterDiscount').textContent = totalAmountAfterDiscount.toFixed(2);
+    document.getElementById('totalAmountAfterDiscount').textContent = '$' + totalAmountAfterDiscount.toFixed(2);
 }
 
 
