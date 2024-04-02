@@ -3,7 +3,6 @@ from firebase_admin import credentials, firestore
 from flask import Flask, jsonify, request
 import json
 import datetime
-# from notification import test_order
 
 cred = credentials.Certificate("ordersdb_serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
@@ -13,20 +12,16 @@ app = Flask(__name__)
 @app.route('/create_order', methods=['POST'])
 def create_order():
     try:
-        # user_id = request.form['userId']
         data1 = request.json
         lpoints_used = int(data1.get('discount_amount', 0))
         cart = data1.get('cart', None)
         email = data1.get('email', None)
         
-        # cart_json_string = request.form['cart']
-        # cart = json.loads(cart_json_string)
+
         current_date = datetime.datetime.now().date()
         formatted_date = current_date.strftime("%Y-%m-%d")
-        # print(lpoints_used, cart, formatted_date)
-        # return lpoints_used
+
         order_data = {
-            # "user_id": user_id,
             "items": [],
             "date_created": formatted_date,
             "price_before_discount": 0, 
@@ -52,7 +47,6 @@ def create_order():
         db = firestore.client()
         orders_ref = db.collection("ordersdb")
         orders_ref.add(order_data)
-        # order_id = new_order_ref.id
 
         print('order created')
         return jsonify(order_data), 200

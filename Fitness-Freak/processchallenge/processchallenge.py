@@ -63,9 +63,6 @@ def process_challenge():
         else:
             return jsonify({"error": "Failed to update loyalty points"}), update_response.status_code
     else:
-        # print("Verification Failed, please resubmit photo.") # make this an alert in the UI, v-if... alert...
-        # invoke_http(error_url, method = "")
-        # return jsonify(response.json()), 400
         error_response = requests.get(error_url, json=response.json())
         return jsonify({'error': 'Verification failed', 'details': error_response.json()}), 400
     
