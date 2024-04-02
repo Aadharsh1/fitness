@@ -111,6 +111,11 @@ function displayProfile(data) {
                 </div>
 
                 <div class="form-group">
+                    <label for="lpoints"><strong>Available Loyalty Points</strong></label>
+                    <input type="number" class="form-control" id="lpoints" name="lpoints" value="${lpoints}" readonly>
+                </div>
+
+                <div class="form-group">
                     <label for="height"><strong>Height (cm):</strong></label>
                     <input type="number" class="form-control" id="height" name="height" value="${height}">
                 </div>
@@ -412,9 +417,17 @@ function addToCart(product){
     // Convert the product quantity to a number
     const productQuantity = +product.quantity;
 
+
+
+
     if (existingProductIndex !== -1) {
         // If the product exists, update its quantity
-        cart[existingProductIndex].quantity += productQuantity;
+        if (cart[existingProductIndex].quantity + productQuantity <= product.availability){
+            cart[existingProductIndex].quantity += productQuantity;
+        }
+        else{
+            alert('Maximum available quantity is already in cart');
+        }
     } else {
         // If the product doesn't exist, add it to the cart
         cart.push({...product, quantity: productQuantity});
@@ -484,7 +497,7 @@ function displayCartItems() {
             ${product.quantity}
         </td>
         <td class="price-cell">$${product.price}</td>
-        <td class="total-cell">$${product.price * product.quantity}</td>
+        <td class="total-cell">$${(product.price * product.quantity).toFixed(2)}</td>
         <td class="action-cell">
             <button class="btn btn-danger remove-item-btn" data-index="${index}">Remove</button>
         </td>
@@ -536,7 +549,7 @@ function displayCartItems() {
     const footerRow = document.createElement('tr');
     footerRow.innerHTML = `
         <td colspan="4">Sub-Total</td>
-        <td>$${totalSum}</td>
+        <td>$${totalSum.toFixed(2)}</td>
         <td></td> <!-- Leave an empty column for consistency -->
     `;
     cartTable.appendChild(footerRow);

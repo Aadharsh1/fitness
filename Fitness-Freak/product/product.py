@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import json
 
 from flasgger import Swagger
 
@@ -192,8 +193,8 @@ def create_product(id):
         }
     ), 201
 
-@app.route("/product/modify/<string:id>/<string:availability>", methods=['PUT'])
-def modify_product(id, availability):
+@app.route("/product/modify", methods=['PUT'])
+def modify_product():
     """
     Modify the availability of a product by its ID
     ---
@@ -214,48 +215,54 @@ def modify_product(id, availability):
         500:
             description: Internal server error
     """
+    data = request.json
+    cart = data.get('cart', None)
+    for item in cart:
+        id = item.get('id', None)
+        availability = int(item.get('availability',None))
+        quantity_purchased = int(item.get('quantity',None))
+        new_quantity = availability - quantity_purchased
+        product = db.session.query(Product).filter_by(id=id).first()
 
-    product = db.session.query(Product).filter_by(id=id).first()
+        if product:
+            try:
+                new_availability = int(new_quantity)
+            except ValueError:
+                return jsonify(
+                    {
+                        "code": 400,
+                        "message": "Availability must be an integer value."
+                    }
+                ), 400
 
-    if product:
-        try:
-            new_availability = int(availability)
-        except ValueError:
+            product.availability = new_availability
+
+            try:
+                db.session.commit()
+            except Exception as e:
+                return jsonify(
+                    {
+                        "code": 500,
+                        "data": {
+                            "id": id
+                        },
+                        "message": f"An error occurred modifying the product availability: {str(e)}"
+                    }
+                ), 500
+        else:
             return jsonify(
                 {
-                    "code": 400,
-                    "message": "Availability must be an integer value."
+                    "code": 404,
+                    "message": "Product not found."
                 }
-            ), 400
-
-        product.availability = new_availability
-
-        try:
-            db.session.commit()
-            return jsonify(
-                {
-                    "code": 200,
-                    "data": product.json(),
-                    "message": "Product availability modified successfully."
-                }
-            )
-        except Exception as e:
-            return jsonify(
-                {
-                    "code": 500,
-                    "data": {
-                        "id": id
-                    },
-                    "message": f"An error occurred modifying the product availability: {str(e)}"
-                }
-            ), 500
-    else:
-        return jsonify(
-            {
-                "code": 404,
-                "message": "Product not found."
-            }
-        ), 404
+            ), 
+    print ('Products updated successfully')
+    return jsonify(
+                    {
+                        "code": 200,
+                        "message": "Product availability modified successfully."
+                    }
+                )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5004, debug=True)

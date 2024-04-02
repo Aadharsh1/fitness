@@ -13,7 +13,7 @@ CORS(app)
 USER_MICROSERVICE_URL = 'http://user:5003'
 PAYMENT_MICROSERVICE_URL = 'http://payment:5007'
 ORDER_MICROSERVICE_URL = 'http://order:5010'
-
+PRODUCT_MICROSERVICE_URL = 'http://product:5004'
 
 #dk whether need
 # @app.route('/process_order/<user_Id>', methods=['GET'])
@@ -115,7 +115,12 @@ def webhook():
         # print("Total Amount:", amount_total / 100)
         metadata = session.get('metadata', {})
         cart_json = metadata.get('cart', '{}')
-        cart = json.loads(cart_json)
+        cart = json.loads(cart_json) # changes the cart to object
+        payloadproduct = {
+                'cart': cart,
+            }
+        databaseupdate_url = PRODUCT_MICROSERVICE_URL + '/product/modify'
+        databaseupdate_response = requests.put(databaseupdate_url, json = payloadproduct)
         discount_amount = metadata.get('discount_amount', '')
         uid = metadata.get('uid', '')
         update_url = USER_MICROSERVICE_URL+ '/update_user_lpoints/' + uid
