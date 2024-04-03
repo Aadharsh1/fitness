@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Fitness Freak - Your Fitness Companion</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link href="./img/favicon.ico" rel="icon">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Flaticon Font -->
+    <link href="lib/flaticon/font/flaticon.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/style.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-white">
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0 nav-bar">
+        <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+            <a href="" class="navbar-brand">
+                <h1 class="m-0 display-4 font-weight-bold text-uppercase text-white">Fitness Freak</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                <div class="navbar-nav ml-auto p-4 bg-secondary">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a class="nav-item nav-link active" href="#home" data-bs-toggle="tab">Home</a></li>
+                        <li class="nav-item"><a class="nav-item nav-link" href="#workout-plans" data-bs-toggle="tab">Workout Plans</a></li>
+                        <li class="nav-item"><a class="nav-item nav-link" href="#challenges" data-bs-toggle="tab">Challeges</a></li>
+                        <li class="nav-item"><a class="nav-item nav-link" href="#products" data-bs-toggle="tab" onclick="fetchProducts()">Products</a></li>
+                        <li class="nav-item"><a class="nav-item nav-link" href="#cart" data-bs-toggle="tab">Shopping Cart</a></li>
+                        <li class="nav-item"><a class="nav-item nav-link" href="#profile" data-bs-toggle="tab" onclick="fetchProfile()">Profile</a></li>
+                        <li class="nav-item"><a class="nav-item nav-link btn-logout" id="logoutBtn" role="button">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#workout-plans" data-bs-toggle="tab">Workout Plans</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#challenges" data-bs-toggle="tab">Challenges</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#products" data-bs-toggle="tab" onclick="fetchProducts()">Products</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="#cart" data-bs-toggle="tab">Shopping Cart <span id="cartCount" class="badge bg-secondary"></span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#profile" data-bs-toggle="tab" onclick="fetchProfile()">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn-logout" id="logoutBtn" role="button">Logout</a>
+                </li>
+            </ul> -->
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header mb-5">
+        <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
+            <!-- <h4 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase font-weight-bold">Workout Plans</h4> -->
+            <div class="d-inline-flex">
+                <!-- <p class="m-0 text-white"><a class="text-white" href="index.html">Home</a></p> -->
+                <!-- <p class="m-0 text-white px-2">/</p> -->
+                <!-- <p class="m-0 text-white">Workout Plans</p> -->
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- About Start -->
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="tab-content">
+                <div class="tab-pane active" id="home">
+                    <div class="mt-4"><h1>Fitness Freak is here to guide you on your fitness journey through a customised work out plan, challenges for you to complete and products to aid you</h1></div>
+                </div>
+                <div class="tab-pane " id="workout-plans">
+                    <button onclick="fetchWorkoutPlans()" class="btn btn-primary mt-4">Get Workout Plans</button>
+                    <div id="plans-container" class="mt-4"></div>
+                </div>
+                <div class="tab-pane" id="challenges">
+                    <button onclick="fetchChallenges()" class="btn btn-primary mt-4">View all challenges</button>
+                    <div id="challenge-container" class="mt-4"></div>
+                </div>
+                <div class="tab-pane" id="products">
+                    <div id="product-container" class="mt-4"></div>
+                </div>
+                <div class="tab-pane" id="cart">    
+                </div>
+                <div class="tab-pane" id="profile">   
+                </div>
+            </div>    
+        </div>
+    </div>
+    <!-- About End -->
+
+    <!-- Our own JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- <script src="script.js"></script> -->
+    <script type="module" src="script.js"></script>
+    <script type="module" src="/firebase/firebaseConfig.js"></script>
+    <script type="module" src="/firebase/auth.js"></script>
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    
+</body>
+
+</html>
