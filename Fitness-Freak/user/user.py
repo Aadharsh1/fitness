@@ -31,6 +31,7 @@ def get_user(user_id):
     for user_doc in user_docs:
         user_data = user_doc.to_dict()
         return jsonify(user_data), 200
+    return jsonify({'error': 'User not found'}), 404
 
 
 @app.route('/user_lpoints/<user_id>', methods=['GET'])
@@ -42,6 +43,8 @@ def get_user_lpoints(user_id):
     for user_doc in user_docs:
         user_data = user_doc.to_dict()
         return jsonify(user_data.get('lpoints')), 200
+    return jsonify({'error': 'User not found'}), 404
+
     
 @app.route('/update_user_lpoints/<user_id>', methods=['PUT'])
 def update_user_lpoints(user_id):
@@ -68,16 +71,13 @@ def update_user_profile(user_id):
     # Extract the updated profile data from the request
     updated_data = request.json
     print(user_id)
-
-    try:
-        query = users_ref.where('userID', '==', user_id).limit(1)
-        user_docs = query.stream()
-        for user_doc in user_docs:
-            user_doc_ref = users_ref.document(user_doc.id)
-            user_doc_ref.update(updated_data)
+    query = users_ref.where('userID', '==', user_id).limit(1)
+    user_docs = query.stream()
+    for user_doc in user_docs:
+        user_doc_ref = users_ref.document(user_doc.id)
+        user_doc_ref.update(updated_data)
         return jsonify({"message": "User profile updated successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "User not found"}), 404
 
 
 if __name__ == '__main__':

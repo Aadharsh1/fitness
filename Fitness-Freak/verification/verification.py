@@ -37,11 +37,11 @@ def get_pict():
         str1 = ''.join(list1)
         str2 = str1.replace(" ", "")
         if 'situp' in challenge_title and 'sit' in str2:
-            return jsonify({"success" : "Image verified successfully", 'keywords' : list1}), 200
+            return jsonify({"success" : "Image verified successfully"}), 200
         if challenge_title in str2:
-            return jsonify({"success" : "Image verified successfully", 'keywords' : list1}), 200
+            return jsonify({"success" : "Image verified successfully"}), 200
         else:
-            return jsonify({"error": "keyword not in image", 'keywords' : list1}), 400
+            return jsonify({"error": "keyword not in image"}), 400
     else:
         return jsonify({"error": "Image processing failed"}), 400
 
