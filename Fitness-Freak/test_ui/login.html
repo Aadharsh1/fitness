@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Fitness Freak</title>
+    <link href="./img/favicon.ico" rel="icon">
+    <script type="module" src="login.js"></script>
+    <script type="module" src="/firebase/firebaseConfig.js"></script>
+    <script type="module" src="/firebase/auth.js"></script>
+    <!-- Google Font Link -->
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center; /* Center align the content */
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 300px; /* Adjust the width of the image */
+            height: auto; /* Maintain aspect ratio */
+            margin-bottom: 10px; /* Add some space below the image */
+            border-radius: 5px;
+        }
+        .header h2 {
+            color: #007bff;
+            font-family: "Permanent Marker", cursive;
+            font-weight: 400;
+            font-style: normal;
+            margin: 0; /* Remove margin to prevent extra space */
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="../images/fitness.jpg" alt="Fitness Freak Logo">
+            <h2 class="permanent-marker-regular">Fitness Freak</h2>
+        </div>
+        <form>
+            <div>
+                <label for="email">Email:</label><br>
+                <input type="text" id="email" name="email"><br>
+            </div>
+            <div>
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password">
+            </div>
+            <div>
+                <input type="submit" id="submit" value="Log In">
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+

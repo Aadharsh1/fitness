@@ -28,7 +28,6 @@ def get_payment_url():
                         'unit_amount': int(discounted_price),  
                         'product_data': {
                             'name': f"{item['title']} (Discount Applied)",
-                            # 'images': [item['image']],  # Corrected attribute name
                         },
                     },
                     'quantity': item['quantity'],
