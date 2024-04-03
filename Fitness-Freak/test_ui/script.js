@@ -369,7 +369,7 @@ function displayProducts(productData) {
         let cardBodyContent = `
         <div class="card-header">${product.title}</div>
         <div class="card-body">
-            <img src="${product.image}" width=100% height=100%>
+            <img src="${product.image}" style="width:25%;max-width;100px;">
             <h5 class="card-title">${product.description}</h5>
             <p class="card-text">Price: $${product.price}</p>
             <p class="card-text">Quantity: ${product.availability}</p>
@@ -697,11 +697,11 @@ function removeCartItem(index) {
 }
 
 
-// function displayCartOnTabActivation() {
-//     const cartTab = document.querySelector('a[href="#cart"]'); // Get the cart tab link
-//     cartTab.addEventListener('shown.bs.tab', function (event) { // Add event listener for tab shown event
-//         displayCartItems(cart); // Call displayCartItems function with the cart data
-//     });
-// }
+function displayCartOnTabActivation() {
+    const cartTab = document.querySelector('a[href="#cart"]'); // Get the cart tab link
+    cartTab.addEventListener('shown.bs.tab', function (event) { // Add event listener for tab shown event
+        displayCartItems(cart); // Call displayCartItems function with the cart data
+    });
+}
 
-// displayCartOnTabActivation();
+displayCartOnTabActivation();

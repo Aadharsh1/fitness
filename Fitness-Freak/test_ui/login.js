@@ -12,7 +12,7 @@ submit.addEventListener('click',function(event){
         const user = userCredential.user;
         // get user id 
         console.log(user.uid)
-        window.location.href = 'index.html'
+        window.location.href = 'home.html'
     })
     .catch((error) => {
         const errorCode = error.code;
