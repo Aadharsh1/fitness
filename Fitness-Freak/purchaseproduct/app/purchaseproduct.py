@@ -34,6 +34,8 @@ def get_user_points(uid):
     user_response = requests.get(f'{USER_MICROSERVICE_URL}/user_lpoints/{uid}')
     if user_response.status_code == 200:
         return jsonify(user_response.json()), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
 
 
 @app.route('/create_checkout_session', methods=['POST'])
@@ -54,7 +56,7 @@ def create_checkout_session():
             payment_url = payment_response.text
             return payment_url, 200
         else:
-            return jsonify({"error": "Failed to get payment URL"}), payment_response.status_code\
+            return jsonify({"error": "Failed to get payment URL"}), payment_response.status_code
             
     except Exception as e:
         return str(e), 500
@@ -101,7 +103,7 @@ def webhook():
         cart_json = metadata.get('cart', '{}')
         cart = json.loads(cart_json) # changes the cart to object
         payloadproduct = {
-                'cart': cart,
+                'cart': cart
             }
         databaseupdate_url = PRODUCT_MICROSERVICE_URL + '/product/modify'
         databaseupdate_response = requests.put(databaseupdate_url, json = payloadproduct)
@@ -123,6 +125,8 @@ def webhook():
         # Check the response
         user = update_response.json()
         if update_response.status_code == 200:
+            print("Order created successfully.")  
+
             # Create a connection to RabbitMQ
             connection = create_connection()
             channel = connection.channel()
@@ -139,12 +143,12 @@ def webhook():
                 channel.basic_publish(exchange='notification', routing_key='send_order', body=json.dumps(data))
                 print("Message sent to send_order queue")
             except Exception as e:
-                print({"code": 404, "message": "Error, fail to send email."})
+                print("Error, fail to send email.")
                 publish_message(channel, exchange_name, routing_key, data)
                 # Close the connection
                 connection.close()
 
-            print("Order created successfully.")   
+             
         else:
             print("Failed to create order. Status code:", update_response.status_code)
 

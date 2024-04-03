@@ -55,23 +55,26 @@ def get_workout_plan():
      # Convert defaultdict to regular dictionary
     workout_data = dict(workout_dict)
     
-    # Dictionary to map day numbers to day labels
-    day_labels = {
-        1: "Day 1",
-        2: "Day 2",
-        3: "Day 3",
-        4: "Day 4",
-        5: "Day 5",
-        6: "Day 6",
-        7: "Day 7"
-    }
-    
-    # Replace day numbers with day labels
-    workout_data_labeled = {day_labels[day]: workouts for day, workouts in workout_data.items()}
-    
-    
-    return jsonify(workout_data_labeled)
+    if workout_data != {}:
 
+        # Dictionary to map day numbers to day labels
+        day_labels = {
+            1: "Day 1",
+            2: "Day 2",
+            3: "Day 3",
+            4: "Day 4",
+            5: "Day 5",
+            6: "Day 6",
+            7: "Day 7"
+        }
+        
+        # Replace day numbers with day labels
+        workout_data_labeled = {day_labels[day]: workouts for day, workouts in workout_data.items()}
+        
+        
+        return jsonify(workout_data_labeled)
+    else:
+        return jsonify({"error": "Workout plan not found."}), 404
 
 
 
