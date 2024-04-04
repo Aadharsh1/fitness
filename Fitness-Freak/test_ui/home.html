@@ -4,10 +4,11 @@
 <head>
     <meta charset="utf-8">
     <title>Fitness Freak - Your Fitness Companion</title>
+    <link rel="icon" type="image" href="./img/favicon.ico">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Favicon -->
-    <link href="./img/favicon.ico" rel="icon">
+    <!-- <link href="./img/favicon.ico" rel="icon"> -->
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -34,7 +35,7 @@
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-item nav-link active" href="#home" data-bs-toggle="tab">Home</a></li>
                         <li class="nav-item"><a class="nav-item nav-link" href="#workout-plans" data-bs-toggle="tab">Workout Plans</a></li>
-                        <li class="nav-item"><a class="nav-item nav-link" href="#challenges" data-bs-toggle="tab">Challeges</a></li>
+                        <li class="nav-item"><a class="nav-item nav-link" href="#challenges" data-bs-toggle="tab" onclick="fetchChallenges()">Challeges</a></li>
                         <li class="nav-item"><a class="nav-item nav-link" href="#products" data-bs-toggle="tab" onclick="fetchProducts()">Products</a></li>
                         <li class="nav-item"><a class="nav-item nav-link" href="#cart" data-bs-toggle="tab">Shopping Cart</a></li>
                         <li class="nav-item"><a class="nav-item nav-link" href="#profile" data-bs-toggle="tab" onclick="fetchProfile()">Profile</a></li>
@@ -83,21 +84,41 @@
 
 
     <!-- About Start -->
-    <div class="container py-5">
-        <div class="row align-items-center">
+    <!-- <img src="https://tlfapparel.com/cdn/shop/products/vital-element-5-gym-shorts-men-shorts-tlf-634520.jpg?v=1646270147&width=900"> -->
+    <div class="container py-5 justify-content-center">
+        <div class="row align-items-center justify-content-center">
             <div class="tab-content">
                 <div class="tab-pane active" id="home">
-                    <div class="mt-4"><h1>Fitness Freak is here to guide you on your fitness journey through a customised work out plan, challenges for you to complete and products to aid you</h1></div>
+                    <div class="mt-4">
+                        <h1 class="text-primary">About Us</h1>
+                        <h2>Fitness Freak is a dynamic fitness platform dedicated to encouraging exercising for individuals of all fitness levels. We are here as your fitness companion, start your journey with us.</h2>
+                        <br>
+                        <h1 class="text-primary">What we offer you?</h1>
+                        <h2>Customised workouts based on your fitness levels, challenges for you to partake in and earn points, products that will assist you in your journey.</h2>
+                        <br>
+                        <h1 class="text-primary">Developers</h1>
+                        <ul>
+                            <li><h2>Aad - CEO</h2></li>
+                            <li><h2>Jing Jie - Engineer</h2></li>
+                            <li><h2>Ans - Engineer</h2></li>
+                            <li><h2>Daniil - Engineer</h2></li>
+                            <li><h2>Clarise - Engineer</h2></li>
+                            <li><h2>Taz - Engineer</h2></li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="tab-pane " id="workout-plans">
-                    <button onclick="fetchWorkoutPlans()" class="btn btn-primary mt-4">Get Workout Plans</button>
+                    <h1 class="text-primary">YOUR Workout Plan</h1>
+                    <button onclick="fetchWorkoutPlans()" class="btn btn-primary mt-4">Get Workout Plan</button>
                     <div id="plans-container" class="mt-4"></div>
                 </div>
                 <div class="tab-pane" id="challenges">
-                    <button onclick="fetchChallenges()" class="btn btn-primary mt-4">View all challenges</button>
-                    <div id="challenge-container" class="mt-4"></div>
+                    <!-- <button onclick="fetchChallenges()" class="btn btn-primary mt-4">View all challenges</button> -->
+                    <h1 class="text-primary">Latest Challenges</h1>
+                    <div id="challenge-container" class="mt-4" style="min-width: 500px;"></div>
                 </div>
                 <div class="tab-pane" id="products">
+                    <h1 class="text-primary">Our Products</h1>
                     <div id="product-container" class="mt-4"></div>
                 </div>
                 <div class="tab-pane" id="cart">    
@@ -119,8 +140,8 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
+    <!-- <script src="lib/easing/easing.min.js"></script> -->
+    <!-- <script src="lib/waypoints/waypoints.min.js"></script> -->
     
 </body>
 
