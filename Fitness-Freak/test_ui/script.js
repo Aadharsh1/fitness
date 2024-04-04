@@ -518,7 +518,7 @@ function displayCartItems() {
         // Now create footerRow2 here, inside the .then function
         const footerRow2 = document.createElement('tr');
         footerRow2.innerHTML = `
-            <td colspan="4">Available Loyalty Points</td>
+            <td colspan="5">Available Loyalty Points</td>
             <td>${lpoints}</td>
             <td></td> <!-- Leave an empty column for consistency -->
         `;
@@ -527,7 +527,7 @@ function displayCartItems() {
         // Now create footerRow2 here, inside the .then function
         const footerRow3 = document.createElement('tr');
         footerRow3.innerHTML = `
-            <td colspan="4">Enter amount of points to redeem</td>
+            <td colspan="5">Enter amount of points to redeem</td>
             <td><label for="pointsToUse" class="form-label">Loyalty Points to Use:</label>
             <input type="number" class="form-control" id="pointsToUse" min="0" max="${maximum_total}" value="0" oninput="calculateTotalAfterDiscount(${totalSum}, ${lpoints})"></td>
             <td></td> <!-- Leave an empty column for consistency -->
@@ -536,7 +536,7 @@ function displayCartItems() {
 
         const footerRow4 = document.createElement('tr');
         footerRow4.innerHTML = `
-            <td colspan="4">Discounted Sub-Total</td>
+            <td colspan="5">Discounted Sub-Total</td>
             <td><span id='totalAmountAfterDiscount'></span></td>
             <td></td> <!-- Leave an empty column for consistency -->
             `;
@@ -548,7 +548,7 @@ function displayCartItems() {
     // Create footer row for total sum
     const footerRow = document.createElement('tr');
     footerRow.innerHTML = `
-        <td colspan="4">Sub-Total</td>
+        <td colspan="5">Sub-Total</td>
         <td>$${totalSum.toFixed(2)}</td>
         <td></td> <!-- Leave an empty column for consistency -->
     `;
@@ -670,7 +670,7 @@ function calculateTotalAfterDiscount(total, points) {
     const totalAmountBeforeDiscount = total;
     const discount = pointsToUseInput.value * 0.01; // 1 point = 1 cent
     const totalAmountAfterDiscount = Math.max(totalAmountBeforeDiscount - discount, 0);
-    document.getElementById('totalAmountAfterDiscount').textContent = totalAmountAfterDiscount.toFixed(2);
+    document.getElementById('totalAmountAfterDiscount').textContent = '$' + totalAmountAfterDiscount.toFixed(2);
 }
 
 
