@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `challenge` (
 
 INSERT INTO `challenge` (`title`, `description`, `id`, `reps`, `fitnessLevel`, `loyaltyPoints`) VALUES
 ('Pushup', 'Pushup Challenge', '12345', '20', 'Healthy weight', 100),
-('Situp', 'Situp Challenge', '22345', '60', 'Healthy weight', 150),
+('Pullup', 'Pullup Challenge', '22345', '10', 'Healthy weight', 150),
 ('Squat', 'Squat Challenge', '32345', '40', 'Healthy weight', 150),
 ('Plank', 'Plank  Challenge', '42345', '1 minute', 'Healthy weight', 150);
 COMMIT;

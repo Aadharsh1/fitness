@@ -22,7 +22,7 @@ def get_pict():
     files = {'image': (file.filename, file.stream, file.content_type)}
     url = "https://objects-detection.p.rapidapi.com/objects-detection"
     headers = {
-        "X-RapidAPI-Key": "b51068ae32msh0fb3d0dd81692bcp1e35e5jsn97186025ca70",
+        "X-RapidAPI-Key": "c3f121f9fdmsh1ee907624b50f57p15fc88jsn72c32b2f78a6",
         "X-RapidAPI-Host": "objects-detection.p.rapidapi.com"
     }
 
@@ -36,8 +36,6 @@ def get_pict():
         list1 = [i.lower() for i in words]
         str1 = ''.join(list1)
         str2 = str1.replace(" ", "")
-        if 'situp' in challenge_title and 'sit' in str2:
-            return jsonify({"success" : "Image verified successfully"}), 200
         if challenge_title in str2:
             return jsonify({"success" : "Image verified successfully"}), 200
         else:

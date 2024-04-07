@@ -264,7 +264,7 @@ function uploadPhoto(file, challengeTitle, loyaltyPoints, uid) {
     .then(data => {
         if (data.hasOwnProperty('error')) {
             console.log('Error:', data);
-            const errorMessage = "Error processing your submission. Please try submitting a better photo.";
+            const errorMessage = data['details']['error_message'];;
             displayErrorMessage(challengeTitle, errorMessage);
         } else {
             console.log('Success:', data);
